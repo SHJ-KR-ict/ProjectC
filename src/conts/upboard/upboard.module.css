@@ -1,0 +1,155 @@
+/*upboard.module.css*/
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+  
+  .boardTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .boardTable th, .boardTable td {
+    border: 1px solid rgba(82, 194, 231, 0.445);
+    padding: 10px;
+  }
+  
+  /* .boardTable thead {
+    background-color: rgba(114, 235, 230, 0.507);
+    
+  } */
+  
+  .titleLink {
+    text-decoration: none;
+    color: rgb(27, 3, 3);
+  }
+  
+  .titleLink:hover {
+    text-decoration: underline;
+    color: rgb(212, 47, 6);
+    cursor: pointer;
+  }
+  
+  /* 버튼 통일 스타일 */
+  .button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: rgb(160, 6, 119);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .button:hover {
+    background-color: deepskyblue;
+  }
+  /*
+  form
+  */
+  .abutton {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: rgb(160, 6, 119);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .abutton:hover {
+    background-color: deepskyblue;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+   .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .text {
+    text-align: left;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    transition: transform 0.3s;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .card-title {
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .detail {
+    text-align: center;
+  }
+  
+  .detail img {
+    width: 400px;
+    max-width: 90%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+    .fading {
+  /* linear-gradient: 위에서 아래로 (to bottom) 
+     빨간색(불투명)에서 흰색(불투명)으로 변하는 그라데이션 예시 */
+  background: linear-gradient(to bottom, hotpink, rgba(255, 255, 255, 0));
+  text-align: center;
+  height: auto;
+  width: 100%;
+}
+  .fading2 {
+  /* linear-gradient: 위에서 아래로 (to bottom) 
+     빨간색(불투명)에서 흰색(불투명)으로 변하는 그라데이션 예시 */
+  background: linear-gradient(to bottom, springgreen, rgba(255, 255, 255, 0));
+  text-align: center;
+  height: auto;
+  width: 100%;
+}
+  .fading3 {
+  /* linear-gradient: 위에서 아래로 (to bottom) 
+     빨간색(불투명)에서 흰색(불투명)으로 변하는 그라데이션 예시 */
+  background: linear-gradient(to bottom, limegreen, rgba(255, 255, 255, 0));
+  text-align: center;
+  height: auto;
+  width: 100%;
+}

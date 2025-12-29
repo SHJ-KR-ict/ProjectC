@@ -1,0 +1,117 @@
+.container {
+  max-width: 1400px;
+  height: 810px;
+  margin: auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  padding-top: 10px;
+  margin: 5px auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 60px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.cardtitle {
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.button {
+  background-color: dodgerblue;
+  color: white;
+  padding: 3px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 25px;
+  margin:0 30px;
+}
+
+.button:hover {
+  background-color: deepskyblue;
+}
+
+.likebutton {
+  background-color: green;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.likebutton:hover {
+  background-color: rgb(24, 165, 158);
+}
+
+.dislikebutton {
+  background-color: rgb(128, 0, 53);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.dislikebutton:hover {
+  background-color: rgba(238, 4, 62, 0.829);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.detail {
+  text-align: center;
+}
+
+.detail img {
+  width: 400px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin: 0;
+}

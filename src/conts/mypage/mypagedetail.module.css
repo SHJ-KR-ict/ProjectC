@@ -1,0 +1,242 @@
+/* =====================
+   기본 설정
+===================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+}
+
+/* =====================
+   레이아웃
+===================== */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* =====================
+   사이드바
+===================== */
+.sidebar {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #e6e9f0;
+  padding: 30px 20px;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin-bottom: 14px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+  padding: 10px 12px;
+  display: block;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar a:hover {
+  background: #f0f2ff;
+  color: #6c63ff;
+}
+
+/* =====================
+   메인 콘텐츠
+===================== */
+.content {
+  flex: 1;
+  padding: 40px;
+}
+
+/* =====================
+   헤더
+===================== */
+.header {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 프로필 */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-header img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ddd;
+}
+
+.user-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.user-info p {
+  font-size: 14px;
+  color: #777;
+  margin-top: 6px;
+}
+
+.addBtn {
+  position: absolute;
+  margin-top: 50px;
+  right: 550px;
+  width: 30px;
+  height: 30px;
+  background-color: rgb(182, 233, 255);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.addBtn:hover {
+  background-color: rgba(0, 81, 255, 0.219);
+}
+
+/* =====================
+   폼 카드
+===================== */
+.form-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* =====================
+   폼 레이아웃 (2열)
+===================== */
+form {
+  
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* =====================
+   입력 그룹
+===================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+/* input / select */
+.form-group input,
+.form-group select {
+  height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #dcdfe6;
+  background: #fafbff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #6c63ff;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(189, 249, 240, 0.15);
+}
+
+/* =====================
+   저장 버튼
+===================== */
+
+.shine-button {
+  position: relative;
+  overflow: hidden;
+  padding: 15px 30px;
+  background: linear-gradient(
+    90deg,
+    #9490fb,
+    #6c9dff,
+    #5eafff
+  );
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 6px;
+}
+
+/* 반짝이는 하얀 빛줄기 */
+.shine-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+/* 호버/클릭 시 빛 이동 */
+.shine-button:hover::before {
+  left: 100%;
+}
+
+/* 호버 시 버튼 색상 살짝 변경 */
+.shine-button:hover {
+  background : radial-gradient(#9490fb7b,#6c9dff74,#5eafff77);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
