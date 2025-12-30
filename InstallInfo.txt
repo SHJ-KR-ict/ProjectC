@@ -1,0 +1,23 @@
+// 작업 폴더 생성
+PS C:\Users\ict\web\react> yarn create react-app myreact1112 --template=typescript
+cd my+tab
+yarn start
+
+//라우팅을 위한 모듈 
+yarn add react-router-dom
+yarn add --dev @types/react-router-dom
+
+// slick & carousel
+// https://react-slick.neostack.com/docs/example
+yarn add react-slick
+yarn add slick-carousel
+yarn add --dev @types/react-slick
+
+//react-pageflip
+yarn add react-pageflip
+
+// axios : ajax를 사용하기 위한 모듈 2025/12/03일 스프링 부트 수업과 연동하기
+yarn add axios
+
+// project chart
+yarn add chart.js react-chartjs-2
