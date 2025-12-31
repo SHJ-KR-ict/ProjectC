@@ -60,11 +60,12 @@
 .likebutton {
   background-color: green;
   color: white;
-  padding: 10px 15px;
+  padding: 10px 25px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
+  font-size: x-large;
 }
 
 .likebutton:hover {

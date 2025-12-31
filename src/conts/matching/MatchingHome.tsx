@@ -131,8 +131,8 @@ const MatchingHome: React.FC = () => {
         fetchMatchingList(1);
     }
 
-    const getAge = (birthStr: string): number => {
-        const birthDate = new Date(birthStr);
+    const getAge = (birth: string): number => {
+        const birthDate = new Date(birth);
         const today = new Date();
 
         let age = today.getFullYear() - birthDate.getFullYear();
@@ -148,6 +148,7 @@ const MatchingHome: React.FC = () => {
         <div className={styles.container}>
             <h2 className={styles.title} style={{ fontWeight: 'bold', marginBottom: 30 }}>당신의 PICK은 무엇인가요?</h2>
             <div className={styles.grid}>
+                {/*리스트*/}
                 {matchingList.map(item => (
                     <Link to={`/matchingHome/${item.NUM}`} key={item.NUM} style={{ textDecoration: 'none' }}>
                         <div className={styles.card}>
@@ -158,6 +159,7 @@ const MatchingHome: React.FC = () => {
                 ))}
             </div>
             <br />
+            {/*페이징*/}
             <div>
                 <nav>
                     <ul className='pagination justify-content-center'>
@@ -192,6 +194,7 @@ const MatchingHome: React.FC = () => {
                     </ul>
                 </nav>
             </div>
+            {/*검색창*/}
             <div style={{ textAlign: 'center' }}>
                 <select onChange={(e) => { setSearchType(e.target.value) }}>
                     <option value='1'>닉네임</option>
@@ -204,6 +207,7 @@ const MatchingHome: React.FC = () => {
                         setSearchValue(e.target.value);
                     }}
                     value={searchValue}
+                    placeholder='검색'
                 />}
                 {searchType === '2' && (
                     <div style={{ display: 'inline-block' }}>
@@ -228,6 +232,7 @@ const MatchingHome: React.FC = () => {
                 >
                     검색옵션
                 </button>
+                {/*세부검색*/}
                 {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '60%', margin: '0 auto', marginTop: '10px' }}>
                     <div style={{ marginBottom: '10px' }}>
                         <label><input type="checkbox" checked={matchingTypeList.includes(1)}
