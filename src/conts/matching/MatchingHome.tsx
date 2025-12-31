@@ -24,8 +24,7 @@ const MatchingHome: React.FC = () => {
     const [period, setPeriod] = useState<{ start: string | null; finish: string | null }>({ start: null, finish: null });
     const [detailSearch, setDetailSearch] = useState(false);
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
-
-    const [City, setCity] = useState("");
+    const [city, setCity] = useState("");
 
     const addressData: { [key: string]: string[] } = {
         '서울': ['강남구', '강동구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구',
@@ -41,20 +40,20 @@ const MatchingHome: React.FC = () => {
 
     const handleTypeToggle = (type: number) => {
         setMatchingTypeList(prev =>
-            prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+            (prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type])
         );
     };
 
     const fetchMatchingList = async (page: number) => {
+        const saved = sessionStorage.getItem('matchingSearchData');
+        const p = saved ? JSON.parse(saved) : null;
         const matchingdata = {
             cPage: page,
-            matchingTypeList: matchingTypeList,
-            matchingValue: {
-                ...matchingValue,
-            },
-            searchType: searchType,
-            searchValue: searchValue,
-            period: period,
+            matchingTypeList: p ? p.matchingTypeList : matchingTypeList,
+            matchingValue: p ? p.matchingValue : matchingValue,
+            searchType: p ? p.searchType : searchType,
+            searchValue: p ? p.searchValue : searchValue,
+            period: p ? p.period : period,
         }
         try {
             const urls = `${process.env.REACT_APP_BACK_END_URL}/matching/matchinglist`
@@ -77,7 +76,35 @@ const MatchingHome: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchMatchingList(currentPage)
+        const saved = sessionStorage.getItem('matchingSearchData');
+        if (saved) {
+            const p = JSON.parse(saved);
+            setSearchType(p.searchType);
+            setSearchValue(p.searchValue);
+            setMatchingTypeList(p.matchingTypeList);
+            setMatchingValue(p.matchingValue);
+            setPeriod(p.period);
+            setCity(p.city);
+            setDetailSearch(p.detailSearch);
+            setCurrentPage(p.currentPage || 1);
+            fetchMatchingList(p.currentPage || 1);
+        } else {
+            fetchMatchingList(1);
+        }
+    }, []);
+
+    useEffect(() => {
+        const saved = sessionStorage.getItem('matchingSearchData');
+        if (saved) {
+            const p = JSON.parse(saved);
+            if (currentPage !== p.currentPage) {
+                const updatedData = { ...p, currentPage: currentPage };
+                sessionStorage.setItem('matchingSearchData', JSON.stringify(updatedData));
+                fetchMatchingList(currentPage);
+            }
+        } else if (currentPage !== 1) {
+            fetchMatchingList(currentPage);
+        }
     }, [currentPage]);
 
     const pageChange = (page: number) => {
@@ -85,6 +112,22 @@ const MatchingHome: React.FC = () => {
     }
 
     const searchFunction = () => {
+        if (!searchValue.trim() && matchingTypeList.length === 0) {
+            sessionStorage.removeItem('matchingSearchData');
+            fetchMatchingList(1);
+            return;
+        }
+        const searchData = {
+            currentPage: 1,
+            searchType,
+            searchValue,
+            matchingTypeList,
+            matchingValue,
+            period,
+            city,
+            detailSearch
+        };
+        sessionStorage.setItem('matchingSearchData', JSON.stringify(searchData));
         fetchMatchingList(1);
     }
 
@@ -155,11 +198,13 @@ const MatchingHome: React.FC = () => {
                     <option value='2'>나이</option>
                 </select>
                 &nbsp;
-                {searchType === '1' && <input type="text" onChange={(e) => {
-                    setSearchValue(e.target.value)
-                    setSearchValue('');
-                    setPeriod({ start: null, finish: null });
-                }} />}
+                {searchType === '1' && <input
+                    type="text"
+                    onChange={(e) => {
+                        setSearchValue(e.target.value);
+                    }}
+                    value={searchValue}
+                />}
                 {searchType === '2' && (
                     <div style={{ display: 'inline-block' }}>
                         <input
@@ -183,11 +228,24 @@ const MatchingHome: React.FC = () => {
                 >
                     검색옵션
                 </button>
-                {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '60%', margin: '0 auto', marginTop:'10px'}}>
+                {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '60%', margin: '0 auto', marginTop: '10px' }}>
                     <div style={{ marginBottom: '10px' }}>
-                        <label><input type="checkbox" checked={matchingTypeList.includes(1)} onChange={() => handleTypeToggle(1)} /> 국적 </label>
+                        <label><input type="checkbox" checked={matchingTypeList.includes(1)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(1)) {
+                                    setMatchingValue(({ country, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(1)
+                            }} /> 국적 </label>
                         &nbsp;&nbsp;
-                        <label><input type="checkbox" checked={matchingTypeList.includes(2)} onChange={() => handleTypeToggle(2)} /> 거주지 </label>
+                        <label><input type="checkbox" checked={matchingTypeList.includes(2)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(2)) {
+                                    setMatchingValue(({ address, ...rest }: any) => rest);
+                                    setCity('');
+                                }
+                                handleTypeToggle(2)
+                            }} /> 거주지 </label>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px' }}>
@@ -206,7 +264,7 @@ const MatchingHome: React.FC = () => {
 
                         {matchingTypeList.includes(2) && (
                             <>
-                                <select value={City} onChange={(e) => {
+                                <select value={city} onChange={(e) => {
                                     setCity(e.target.value);
                                     setMatchingValue({ ...matchingValue, address: e.target.value || null });
                                 }}>
@@ -215,14 +273,14 @@ const MatchingHome: React.FC = () => {
                                 </select>
 
                                 <select
-                                    disabled={!City}
+                                    disabled={!city}
                                     onChange={(e) => setMatchingValue({
                                         ...matchingValue,
-                                        address: e.target.value ? `${City} ${e.target.value}` : City
+                                        address: e.target.value ? `${city} ${e.target.value}` : city
                                     })}
                                 >
-                                    <option value="">구 선택</option>
-                                    {City && addressData[City].map(d => <option key={d} value={d}>{d}</option>)}
+                                    <option value="">구/군 선택</option>
+                                    {city && addressData[city].map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                             </>
                         )}

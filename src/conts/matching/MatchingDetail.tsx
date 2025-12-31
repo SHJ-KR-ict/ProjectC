@@ -6,7 +6,7 @@ const MatchingDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const nav = () => {
-        navigate("/matchingHome")
+        navigate(-1)
     }
     return (
         <div style={{marginBottom:80}}>

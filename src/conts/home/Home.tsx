@@ -56,8 +56,6 @@ const Home: React.FC = () => {
       subtitle: '새로운 이야기가 시작됩니다'
     }
   ]
-
-  const nav = () => navigate('/matchingHome')
   const signupnav = () => navigate('/signup')
 
   const [show, setShow] = useState(false)
@@ -91,7 +89,7 @@ const Home: React.FC = () => {
                   <button className="main-btn" onClick={signupnav}>
                     계정 만들기
                   </button>
-                  <button className="main-btn outline" onClick={nav}>
+                  <button className="main-btn outline" onClick={() => { navigate('/matchingHome'); sessionStorage.removeItem('matchingSearchData'); }}>
                     매칭하기
                   </button>
                 </div>
