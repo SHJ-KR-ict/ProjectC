@@ -50,7 +50,7 @@ const MatchingDetail: React.FC = () => {
 
     const sendRequest = async () => {
         for (const receiverId of selected) {
-            await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/friends/request`, { receiverId }, { withCredentials: true });
+            await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/request`, { receiverId }, { withCredentials: true });
             alert("친구 신청 완료");
             setSelected(new Set());
             setRefresh(prev => prev + 1);
