@@ -20,12 +20,34 @@ const MatchingHome: React.FC = () => {
     const [searchType, setSearchType] = useState('1');
     const [searchValue, setSearchValue] = useState('');
     const [matchingTypeList, setMatchingTypeList] = useState<number[]>([]);
-    const [matchingValue, setMatchingValue] = useState({});
-    const [period, setPeriod] = useState({ start: '', finish: '' });
+    const [matchingValue, setMatchingValue] = useState<any>({});
+    const [period, setPeriod] = useState<{ start: string | null; finish: string | null }>({ start: null, finish: null });
+    const [detailSearch, setDetailSearch] = useState(false);
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
+
+    const [City, setCity] = useState("");
+
+    const addressData: { [key: string]: string[] } = {
+        '서울': ['강남구', '강동구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구',
+            '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
+        '부산': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
+        '대구': ['남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구', '군위군'],
+        '인천': ['강화군', '계양구', '미추홀구', '남동구', '동구', '부평구', '서구', '연수구', '옹진군', '중구'],
+        '광주': ['광산구', '남구', '동구', '북구', '서구'],
+        '대전': ['대덕구', '동구', '서구', '유성구', '중구'],
+        '울산': ['남구', '동구', '북구', '울주군', '중구'],
+        '123': ['123']
+    };
+
+    const handleTypeToggle = (type: number) => {
+        setMatchingTypeList(prev =>
+            prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+        );
+    };
 
     const fetchMatchingList = async (page: number) => {
         const matchingdata = {
+            cPage: page,
             matchingTypeList: matchingTypeList,
             matchingValue: {
                 ...matchingValue,
@@ -43,7 +65,7 @@ const MatchingHome: React.FC = () => {
             });
             console.log((response.data));
             console.log(response.data.currentPage);
-            setMatchingList(response.data.data)
+            setMatchingList(response.data.data);
             setTotalItems(response.data.totalItems);
             setTotalPages(response.data.totalPages);
             setCurrentPage(response.data.currentPage);
@@ -92,32 +114,6 @@ const MatchingHome: React.FC = () => {
                     </Link>
                 ))}
             </div>
-            <div style={{ textAlign: 'center', marginTop: 30 }}>
-                <button className={styles.button}>다시 매칭하기</button>
-            </div>
-            <br />
-            <div style={{ textAlign: 'center' }}>
-                <select onChange={(e) => { setSearchType(e.target.value) }}>
-                    <option value='1'>닉네임</option>
-                    <option value='2'>나이</option>
-                </select>
-                &nbsp;
-                {searchType === '1' && <input type="text" onChange={(e) => { setSearchValue(e.target.value) }} />}
-                {searchType === '2' && (
-                    <div style={{ display: 'inline-block' }}>
-                        <input
-                            type="date"
-                            onChange={(e) => setPeriod(prev => ({ ...prev, start: e.target.value }))}
-                        />
-                        ~~
-                        <input
-                            type="date"
-                            onChange={(e) => setPeriod(prev => ({ ...prev, finish: e.target.value }))}
-                        />
-                    </div>
-                )}&nbsp;
-                <button className='btn btn-warning' onClick={searchFunction}>검색</button>
-            </div>
             <br />
             <div>
                 <nav>
@@ -153,6 +149,87 @@ const MatchingHome: React.FC = () => {
                     </ul>
                 </nav>
             </div>
+            <div style={{ textAlign: 'center' }}>
+                <select onChange={(e) => { setSearchType(e.target.value) }}>
+                    <option value='1'>닉네임</option>
+                    <option value='2'>나이</option>
+                </select>
+                &nbsp;
+                {searchType === '1' && <input type="text" onChange={(e) => {
+                    setSearchValue(e.target.value)
+                    setSearchValue('');
+                    setPeriod({ start: null, finish: null });
+                }} />}
+                {searchType === '2' && (
+                    <div style={{ display: 'inline-block' }}>
+                        <input
+                            type="date"
+                            onChange={(e) => setPeriod(prev => ({ ...prev, start: e.target.value || null }))}
+                            value={period.start || ""}
+                        />
+                        ~~
+                        <input
+                            type="date"
+                            onChange={(e) => setPeriod(prev => ({ ...prev, finish: e.target.value || null }))}
+                            value={period.finish || ""}
+                        />
+                    </div>
+                )}&nbsp;
+                <button className='btn btn-warning' onClick={searchFunction}>검색</button>
+                &nbsp;&nbsp;
+                <button
+                    className={`btn ${detailSearch ? 'btn-dark' : 'btn-outline-dark'}`}
+                    onClick={() => setDetailSearch(!detailSearch)}
+                >
+                    검색옵션
+                </button>
+                {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '60%', margin: '0 auto', marginTop:'10px'}}>
+                    <div style={{ marginBottom: '10px' }}>
+                        <label><input type="checkbox" checked={matchingTypeList.includes(1)} onChange={() => handleTypeToggle(1)} /> 국적 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(2)} onChange={() => handleTypeToggle(2)} /> 거주지 </label>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        {matchingTypeList.includes(1) && (
+                            <select
+                                onChange={(e) =>
+                                    setMatchingValue({ ...matchingValue, country: e.target.value || null })}
+                                value={matchingValue.country || ""}
+                            >
+                                <option value="">국적</option>
+                                <option value="한국">한국</option>
+                                <option value="미국">미국</option>
+                                <option value="일본">일본</option>
+                            </select>
+                        )}
+
+                        {matchingTypeList.includes(2) && (
+                            <>
+                                <select value={City} onChange={(e) => {
+                                    setCity(e.target.value);
+                                    setMatchingValue({ ...matchingValue, address: e.target.value || null });
+                                }}>
+                                    <option value="">시 선택</option>
+                                    {Object.keys(addressData).map(city => <option key={city} value={city}>{city}</option>)}
+                                </select>
+
+                                <select
+                                    disabled={!City}
+                                    onChange={(e) => setMatchingValue({
+                                        ...matchingValue,
+                                        address: e.target.value ? `${City} ${e.target.value}` : City
+                                    })}
+                                >
+                                    <option value="">구 선택</option>
+                                    {City && addressData[City].map(d => <option key={d} value={d}>{d}</option>)}
+                                </select>
+                            </>
+                        )}
+                    </div>
+                </div>}
+            </div>
+            <br />
         </div>
     )
 }
