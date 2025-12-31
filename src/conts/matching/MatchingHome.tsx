@@ -70,6 +70,8 @@ const MatchingHome: React.FC = () => {
             setCurrentPage(response.data.currentPage);
             setStartPage(response.data.startPage);
             setEndPage(response.data.endPage);
+            const updatedData = { ...p, ...matchingdata, city, detailSearch, currentPage: page };
+            sessionStorage.setItem('matchingSearchData', JSON.stringify(updatedData));
         } catch (error) {
             console.log("데이터 가져오기 실패: " + error);
         }
@@ -79,7 +81,7 @@ const MatchingHome: React.FC = () => {
         const saved = sessionStorage.getItem('matchingSearchData');
         if (saved) {
             const p = JSON.parse(saved);
-            setSearchType(p.searchType);
+            setSearchType(p.searchType || 1);
             setSearchValue(p.searchValue);
             setMatchingTypeList(p.matchingTypeList);
             setMatchingValue(p.matchingValue);
@@ -93,23 +95,10 @@ const MatchingHome: React.FC = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const saved = sessionStorage.getItem('matchingSearchData');
-        if (saved) {
-            const p = JSON.parse(saved);
-            if (currentPage !== p.currentPage) {
-                const updatedData = { ...p, currentPage: currentPage };
-                sessionStorage.setItem('matchingSearchData', JSON.stringify(updatedData));
-                fetchMatchingList(currentPage);
-            }
-        } else if (currentPage !== 1) {
-            fetchMatchingList(currentPage);
-        }
-    }, [currentPage]);
-
     const pageChange = (page: number) => {
-        setCurrentPage(page);
-    }
+        if (page < 1 || page > totalPages) return;
+        fetchMatchingList(page);
+    };
 
     const searchFunction = () => {
         if (!searchValue.trim() && matchingTypeList.length === 0) {
@@ -196,9 +185,9 @@ const MatchingHome: React.FC = () => {
             </div>
             {/*검색창*/}
             <div style={{ textAlign: 'center' }}>
-                <select onChange={(e) => { setSearchType(e.target.value) }}>
-                    <option value='1'>닉네임</option>
-                    <option value='2'>나이</option>
+                <select value={searchType} onChange={(e) => { setSearchType(e.target.value) }}>
+                    <option value='1' >닉네임</option>
+                    <option value='2' >나이</option>
                 </select>
                 &nbsp;
                 {searchType === '1' && <input

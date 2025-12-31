@@ -14,8 +14,14 @@ const MatchingDetail: React.FC = () => {
     const [matchingDetail, setMatchingDetail] = useState<MatchingVO>();
     const { id } = useParams<{ id: string }>();
     const [loading, setLoading] = useState(true);
+    const [members, setMembers] = useState<any[]>([]);
+    const [selected, setSelected] = useState<Set<string>>(new Set());
+    const [incoming, setIncoming] = useState<any[]>([]);
+    const [friends, setFriends] = useState<any[]>([]);
+    const [outgoing, setOutgoing] = useState<any[]>([]);
+    const [rejected, setRejected] = useState<Set<string>>(new Set());
+    const [refresh, setRefresh] = useState(0);
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,7 +37,6 @@ const MatchingDetail: React.FC = () => {
                     params: { num: parseInt(id) }
                 });
                 console.log(resp.data);
-                console.log(imageBasePath + matchingDetail?.profileimage);
                 setMatchingDetail(resp.data);
             } catch (error) {
                 console.log("데이터 요청 실패: ", error)
@@ -43,6 +48,14 @@ const MatchingDetail: React.FC = () => {
         fetchData();
     }, [id]);
 
+    const sendRequest = async () => {
+        for (const receiverId of selected) {
+            await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/friends/request`, { receiverId }, { withCredentials: true });
+            alert("친구 신청 완료");
+            setSelected(new Set());
+            setRefresh(prev => prev + 1);
+        }
+    }
 
     return (
         <div style={{ marginBottom: 80 }}>
@@ -50,8 +63,13 @@ const MatchingDetail: React.FC = () => {
                 <img src={imageBasePath + matchingDetail?.profileimage} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <br />
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>
+                    {matchingDetail?.nickname}
+                </span>
+            </div>
             <div style={{ textAlign: 'center' }}>
-                <button className={styles.likebutton}>Like</button>
+                <button className={styles.likebutton} onClick={sendRequest}>Like</button>
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
