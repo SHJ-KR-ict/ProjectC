@@ -23,9 +23,10 @@ const MatchingHome: React.FC = () => {
     const [matchingValue, setMatchingValue] = useState<any>({});
     const [period, setPeriod] = useState<{ start: string | null; finish: string | null }>({ start: null, finish: null });
     const [detailSearch, setDetailSearch] = useState(false);
-    const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
     const [city, setCity] = useState("");
 
+    const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
+    
     const addressData: { [key: string]: string[] } = {
         '서울': ['강남구', '강동구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구',
             '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
@@ -148,7 +149,7 @@ const MatchingHome: React.FC = () => {
                 ))}
             </div>
             <br />
-            
+
             {/*페이징*/}
             <div>
                 <nav>
@@ -184,6 +185,7 @@ const MatchingHome: React.FC = () => {
                     </ul>
                 </nav>
             </div>
+
             {/*검색창*/}
             <div style={{ textAlign: 'center' }}>
                 <select value={searchType} onChange={(e) => { setSearchType(e.target.value) }}>
