@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styles from './MatchingHome.module.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
@@ -9,6 +9,7 @@ interface MatchingVO {
     BIRTH: string;
     PROFILEIMAGE: string;
 }
+
 
 const MatchingHome: React.FC = () => {
     const [matchingList, setMatchingList] = useState<MatchingVO[]>([]);
@@ -26,7 +27,7 @@ const MatchingHome: React.FC = () => {
     const [city, setCity] = useState("");
 
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
-    
+
     const addressData: { [key: string]: string[] } = {
         '서울': ['강남구', '강동구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구',
             '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
@@ -36,8 +37,12 @@ const MatchingHome: React.FC = () => {
         '광주': ['광산구', '남구', '동구', '북구', '서구'],
         '대전': ['대덕구', '동구', '서구', '유성구', '중구'],
         '울산': ['남구', '동구', '북구', '울주군', '중구'],
-        '123': ['123']
     };
+
+    const YYYY: string[] = useMemo(() => {
+        const currentYear = new Date().getFullYear();
+        return Array.from({ length: 70 }, (_, i) => String(currentYear - (i + 1)));
+    }, []);
 
     const handleTypeToggle = (type: number) => {
         setMatchingTypeList(prev =>
@@ -203,17 +208,29 @@ const MatchingHome: React.FC = () => {
                 />}
                 {searchType === '2' && (
                     <div style={{ display: 'inline-block' }}>
-                        <input
-                            type="date"
-                            onChange={(e) => setPeriod(prev => ({ ...prev, start: e.target.value || null }))}
+                        <select
                             value={period.start || ""}
-                        />
-                        ~~
-                        <input
-                            type="date"
-                            onChange={(e) => setPeriod(prev => ({ ...prev, finish: e.target.value || null }))}
+                            onChange={(e) => {
+                                const val = e.target.value || null;
+                                setPeriod(prev => ({ ...prev, start: val }));
+                            }}
+                        >
+                            <option value="">출생년도</option>
+                            {YYYY.map(y => <option key={y} value={y}>{y}년</option>)}
+                        </select>
+
+                        <span style={{ margin: '0 15px' }}>~~</span>
+
+                        <select
                             value={period.finish || ""}
-                        />
+                            onChange={(e) => {
+                                const val = e.target.value || null;
+                                setPeriod(prev => ({ ...prev, finish: val }));
+                            }}
+                        >
+                            <option value="">출생년도</option>
+                            {YYYY.map(y => <option key={y} value={y}>{y}년</option>)}
+                        </select>
                     </div>
                 )}&nbsp;
                 <button className='btn btn-warning' onClick={searchFunction}>검색</button>

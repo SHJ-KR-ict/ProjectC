@@ -11,6 +11,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+    const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
     const navigate = useNavigate();
 
     const loginNav = () => {
@@ -54,7 +55,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {children}
             </main>
 
-            <footer style={{ backgroundColor: '#fff', borderTop: '1px solid #eee'}}>
+            <footer style={{ backgroundColor: '#fff', borderTop: '1px solid #eee' }}>
                 <div style={{ color: '#000', padding: '20px 0', textAlign: 'center' }}>
                     @ 2025 ICTPassword
                 </div>
