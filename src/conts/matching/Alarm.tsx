@@ -6,13 +6,26 @@ import Map from '../map/Map';
 
 const Alarm: React.FC = () => {
   const [category, setCategory] = useState('');
+
+  //알람 첫 화면 마운트 시
   useEffect(() => {
     setCategory('like')
+
+
   }, []);
+
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
-  const [selectedMenu, setSelectedMenu] = useState<React.ReactElement>()
 
+  // modal 용 함수들
+  const handleClose = () => { setShow(false); setMenu('') }
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setMenu(e.currentTarget.id)
+    setShow(true)
+  };
+
+  //date 요청시 map
   const renderContent = (menu: string) => {
     switch (menu) {
       case 'mapp':
@@ -21,13 +34,7 @@ const Alarm: React.FC = () => {
         return null;
     }
   };
-
-  const handleClose = () => {setShow(false);setMenu('')}
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setMenu(e.currentTarget.id)
-    setShow(true)
-  };
-
+  
   return (
     <div>
 
@@ -106,9 +113,9 @@ const Alarm: React.FC = () => {
           <Modal.Title>{menu}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {show && (<>{renderContent(menu)}<div style={{textAlign:'center'}}><p>상세주소 : ~~~~~</p></div></>)}
+          {show && (<>{renderContent(menu)}<div style={{ textAlign: 'center' }}><p>상세주소 : ~~~~~</p></div></>)}
         </Modal.Body>
-        <Modal.Footer style={{display:'flex',justifyContent:'center'}}>
+        <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
           <Button variant="primary" >
             Date
           </Button>

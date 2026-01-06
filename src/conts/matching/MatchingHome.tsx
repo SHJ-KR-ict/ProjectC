@@ -41,7 +41,7 @@ const MatchingHome: React.FC = () => {
 
     const YYYY: string[] = useMemo(() => {
         const currentYear = new Date().getFullYear();
-        return Array.from({ length: 70 }, (_, i) => String(currentYear - (i + 1)));
+        return Array.from({ length: 70 }, (_, i) => String(currentYear - (i)));
     }, []);
 
     const handleTypeToggle = (type: number) => {
@@ -84,6 +84,8 @@ const MatchingHome: React.FC = () => {
     }
 
     useEffect(() => {
+        const navigation = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+
         const saved = sessionStorage.getItem('matchingSearchData');
         if (saved) {
             const p = JSON.parse(saved);
