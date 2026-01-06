@@ -51,7 +51,7 @@ const MatchingDetail: React.FC = () => {
     const sendRequest = async () => {
         const receiverId = matchingDetail?.nickname
         await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/request`, { receiverId }, { withCredentials: true });
-        alert("친구 신청 완료");
+        alert("Like 신청 완료");
         setSelected(new Set());
         setRefresh(prev => prev + 1);
     }

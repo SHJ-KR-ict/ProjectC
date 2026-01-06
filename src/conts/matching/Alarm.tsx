@@ -3,29 +3,89 @@ import styles from './MatchingHome.module.css'
 import Chart from '../chart_ui/Chart';
 import { Button, Modal } from 'react-bootstrap';
 import Map from '../map/Map';
+import axios from 'axios';
+import { useAuth } from '../../comp/AuthProvider';
+
+interface MemberProfile {
+  NUM: number;
+  NICKNAME: string;
+  BIRTH: string;
+  PROFILEIMAGE: string;
+  LOCATION?: string;
+}
 
 const Alarm: React.FC = () => {
   const [category, setCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [memberprofile, setMemberProfile] = useState<MemberProfile[]>([]);
+  const { member } = useAuth();
 
-  //알람 첫 화면 마운트 시
+  const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
+
+  //alarm 첫 화면 마운트 시
   useEffect(() => {
-    setCategory('like')
-
-
+    setCategory('like');
   }, []);
 
+  //나이 함수
+  const getAge = (birth: string): number => {
+    const birthDate = new Date(birth);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  // category 바뀔때마다 재 요청
+  useEffect(() => {
+    const fetchData = async () => {
+      if (category === 'like') {
+        try {
+          const url = `${process.env.REACT_APP_BACK_END_URL}/api/like/incoming`;
+          const resp = await axios.get(url, {
+            params: { nickname: member?.nickname }
+          });
+          console.log(resp.data);
+          setMemberProfile(resp.data);
+        } catch (error) {
+          console.log("데이터 요청 실패: ", error)
+        } finally {
+          setLoading(false);
+        }
+      } else if (category === 'date') {
+        try {
+          const url = `${process.env.REACT_APP_BACK_END_URL}/api/date/incoming`;
+          const resp = await axios.get(url, {
+            params: { nickname: member?.nickname }
+          });
+          console.log(resp.data);
+          setMemberProfile(resp.data);
+        } catch (error) {
+          console.log("데이터 요청 실패: ", error)
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+    fetchData();
+  }, [category]);
+
+  // modal
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
 
-  // modal 용 함수들
   const handleClose = () => { setShow(false); setMenu('') }
-
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setMenu(e.currentTarget.id)
     setShow(true)
   };
 
-  //date 요청시 map
+  //date 요청시 map 정보
   const renderContent = (menu: string) => {
     switch (menu) {
       case 'mapp':
@@ -34,7 +94,7 @@ const Alarm: React.FC = () => {
         return null;
     }
   };
-  
+
   return (
     <div>
 
@@ -43,65 +103,41 @@ const Alarm: React.FC = () => {
         <button className={styles.button} id='like' type='button' onClick={() => { setCategory('like') }}>Like 요청</button>
         <button className={styles.button} id='date' type='button' onClick={() => { setCategory('date') }}>Date 요청</button>
       </div>
+
       {
-        category === 'date' && (<><div style={{ margin: '30px auto' }}>
-          <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
-            <img src={'/alarm/1.jpg'} alt='' />
-            <div className={styles.cardTitle}>xx님의 Date 요청</div>
-            <div className={styles.cardTitle}>~~동 ~~에서 만나요</div>
-          </div>
-          <br />
-          <div style={{ textAlign: 'center' }}>
-            <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton}>싫어요</button>
-          </div>
-        </div>
-          <div style={{ margin: '30px auto' }}>
-            <div className={styles.card} style={{ width: '500px', margin: '0 auto', textAlign: 'center' }}>
-              <img src={'/alarm/2.jpg'} alt='' />
-              <div className={styles.cardTitle}>xx님의 Date 요청</div>
-              <div className={styles.cardTitle}>~~동 ~~에서 만나요</div>
-            </div>
-            <br />
-            <div style={{ textAlign: 'center' }}>
-              <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton}>싫어요</button>
-            </div>
-          </div></>)
+        category === 'date' && (<div style={{ margin: '30px auto' }}>
+          {
+            memberprofile.map((e) => (<>
+              <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
+                <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
+                <div className={styles.cardTitle}>{e.NICKNAME}님의 Date 요청</div>
+                <div className={styles.cardTitle}>{e.LOCATION}에서 만나요</div>
+              </div>
+              <br />
+              <div style={{ textAlign: 'center' }}>
+                <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton}>싫어요</button>
+              </div></>
+            ))
+          }
+        </div>)
       }
       {
-        category === 'like' && (<><div style={{ margin: '30px auto' }}>
-          <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
-            <img src={'/alarm/2.jpg'} alt='' />
-            <div className={styles.cardTitle}>이름</div>
-            <div className={styles.cardTitle}>나이</div>
-          </div>
-          <br />
-          <div style={{ textAlign: 'center' }}>
-            <button className={styles.likebutton}>좋아요</button> <button className={styles.dislikebutton}>싫어요</button>
-          </div>
-        </div>
-          <div style={{ margin: '30px auto' }}>
-            <div className={styles.card} style={{ width: '500px', margin: '0 auto', textAlign: 'center' }}>
-              <img src={'/alarm/3.jpg'} alt='' />
-              <div className={styles.cardTitle}>이름</div>
-              <div className={styles.cardTitle}>나이</div>
+        category === 'like' && (<div style={{ margin: '30px auto' }}>
+          {memberprofile.map((e) => (<>
+            <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
+              <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
+              <div className={styles.cardTitle}>{e.NICKNAME}</div>
+              <div className={styles.cardTitle}>{getAge(e.BIRTH)}</div>
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
               <button className={styles.likebutton}>좋아요</button> <button className={styles.dislikebutton}>싫어요</button>
-            </div>
-          </div>
-          <div style={{ margin: '30px auto' }}>
-            <div className={styles.card} style={{ width: '500px', margin: '0 auto', textAlign: 'center' }}>
-              <img src={'/alarm/1.jpg'} alt='' />
-              <div className={styles.cardTitle}>이름</div>
-              <div className={styles.cardTitle}>나이</div>
-            </div>
-            <br />
-            <div style={{ textAlign: 'center' }}>
-              <button className={styles.likebutton}>좋아요</button> <button className={styles.dislikebutton}>싫어요</button>
-            </div>
-          </div></>)
+            </div></>
+          ))
+          }
+        </div >)
       }
+
       <Modal
         show={show}
         onHide={handleClose}
