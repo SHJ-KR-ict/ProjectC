@@ -130,7 +130,7 @@ const Alarm: React.FC = () => {
       }
       {
         category === 'like' && (<div style={{ margin: '30px auto' }}>
-          {memberprofile.map((e) => (<>
+          {memberprofile.map((e,i) => (<React.Fragment key={i}>
             <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
               <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
               <div className={styles.cardTitle}>{e.NICKNAME}</div>
@@ -140,7 +140,7 @@ const Alarm: React.FC = () => {
             <div style={{ textAlign: 'center' }}>
               <button className={styles.likebutton} onClick={() => { likeResponse(e.ID, 'accept') }}>좋아요</button>
               <button className={styles.dislikebutton} onClick={() => { likeResponse(e.ID, 'reject') }}>싫어요</button>
-            </div></>
+            </div></React.Fragment>
           ))
           }
         </div >)
