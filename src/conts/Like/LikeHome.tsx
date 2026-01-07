@@ -112,8 +112,6 @@ const LikeHome: React.FC = () => {
                   pageChange(currentPage - 1)
                 }}>이전</button>
               </li>
-
-
             )}
             {
               Array.from({ length: endPage - startPage + 1 }, (xx, i) => i + startPage)
