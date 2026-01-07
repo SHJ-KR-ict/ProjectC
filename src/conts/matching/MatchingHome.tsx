@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styles from './MatchingHome.module.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
+import { useAuth } from '../../comp/AuthProvider';
 
 interface MatchingVO {
     NUM: number;
@@ -10,8 +11,8 @@ interface MatchingVO {
     PROFILEIMAGE: string;
 }
 
-
 const MatchingHome: React.FC = () => {
+    const { member } = useAuth();
     const [matchingList, setMatchingList] = useState<MatchingVO[]>([]);
     const [totalItems, setTotalItems] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -62,12 +63,20 @@ const MatchingHome: React.FC = () => {
             period: p ? p.period : period,
         }
         try {
-            const urls = `${process.env.REACT_APP_BACK_END_URL}/matching/matchinglist`
-            const response = await axios.post(urls, matchingdata, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const matchingurls = `${process.env.REACT_APP_BACK_END_URL}/matching/matchinglist`
+            const likeurls = `${process.env.REACT_APP_BACK_END_URL}/api/like/mylike`;
+            const [matchingresp, likeresp] = await Promise.all([
+                axios.post(matchingurls, matchingdata, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }),
+                axios.get(likeurls, { params: { nickname: member?.nickname }, withCredentials: true })
+            ]);
+
+            const mylike = new Set(likeresp.data.map((like: any) => like.NUM));
+            const response = matchingresp.data.data.filter((match: any) => !mylike.has(match.NUM));
+
             console.log((response.data));
             console.log(response.data.currentPage);
             setMatchingList(response.data.data);
@@ -84,7 +93,7 @@ const MatchingHome: React.FC = () => {
     }
 
     useEffect(() => {
-        const navigation = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        //const navigation = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
 
         const saved = sessionStorage.getItem('matchingSearchData');
         if (saved) {

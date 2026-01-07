@@ -12,6 +12,7 @@ interface MemberProfile {
   NICKNAME: string;
   BIRTH: string;
   PROFILEIMAGE: string;
+  ID: number;
   LOCATION?: string;
 }
 
@@ -19,17 +20,14 @@ const Alarm: React.FC = () => {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [memberprofile, setMemberProfile] = useState<MemberProfile[]>([]);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [friends, setFriends] = useState<any[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const { member } = useAuth();
   const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
+
   //alarm 첫 화면 마운트 시
   useEffect(() => {
     if (!member) return;
     setCategory('like');
-    axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/like/mylike`,
-      { withCredentials: true }
-    ).then(res => setFriends(res.data));
   }, []);
 
   //나이 함수
@@ -80,20 +78,17 @@ const Alarm: React.FC = () => {
     fetchData();
   }, [category]);
 
-  const denyLike = () => {
-
+  const likeResponse = async (id: number, action: string) => {
+    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { id, action }, { withCredentials: true });
+    alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
+    window.location.reload();
   }
 
-  const denyDate = () => {
-
-  }
-
-  const receiveLike = () => {
-
-  }
-
-  const receiveDate = () => {
-
+  const dateResponse = async (id: number, action: string) => {
+    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { id, action }, { withCredentials: true });
+    alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
+    window.location.reload();
+    setCategory('date');
   }
 
   // modal
@@ -108,7 +103,6 @@ const Alarm: React.FC = () => {
 
   return (
     <div>
-
       <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>alarm</h2>
       <div style={{ textAlign: 'center', fontSize: '30px', height: '50px' }}>
         <button className={styles.button} id='like' type='button' onClick={() => { setCategory('like') }}>Like 요청</button>
@@ -118,7 +112,7 @@ const Alarm: React.FC = () => {
       {
         category === 'date' && (<div style={{ margin: '30px auto' }}>
           {
-            memberprofile.map((e) => (<>
+            memberprofile.map((e, i) => (<React.Fragment key={i}>
               <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
                 <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
                 <div className={styles.cardTitle}>{e.NICKNAME}님의 Date 요청</div>
@@ -126,8 +120,10 @@ const Alarm: React.FC = () => {
               </div>
               <br />
               <div style={{ textAlign: 'center' }}>
-                <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton} onClick={denyDate}>싫어요</button>
-              </div></>
+                <button id='mapp' className={styles.likebutton} onClick={(entry) => { handleClick(entry); setSelectedIndex(i) }}>위치보기</button>
+                <button className={styles.dislikebutton} onClick={() => { dateResponse(e.ID, 'reject') }}>싫어요</button>
+              </div>
+            </React.Fragment>
             ))
           }
         </div>)
@@ -142,7 +138,8 @@ const Alarm: React.FC = () => {
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
-              <button className={styles.likebutton} onClick={receiveLike}>좋아요</button> <button className={styles.dislikebutton} onClick={denyLike}>싫어요</button>
+              <button className={styles.likebutton} onClick={() => { likeResponse(e.ID, 'accept') }}>좋아요</button>
+              <button className={styles.dislikebutton} onClick={() => { likeResponse(e.ID, 'reject') }}>싫어요</button>
             </div></>
           ))
           }
@@ -162,12 +159,12 @@ const Alarm: React.FC = () => {
         <Modal.Body>
           {show && (
             <>
-              <AddressMap address={memberprofile[0].LOCATION?.split(',')[0] || ''} />
-              <div style={{ textAlign: 'center' }}><p>상세주소 : {memberprofile[0].LOCATION?.split(',')[1]}</p></div>
+              <AddressMap address={memberprofile[selectedIndex].LOCATION?.split(',')[0] || ''} />
+              <div style={{ textAlign: 'center' }}><p>상세주소 : {memberprofile[selectedIndex].LOCATION?.split(',')[1]}</p></div>
             </>)}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="primary" onClick={receiveDate}>
+          <Button variant="primary" onClick={() => { dateResponse(memberprofile[selectedIndex].ID, 'accept') }}>
             Date
           </Button>
           <Button variant="secondary" onClick={handleClose}>
