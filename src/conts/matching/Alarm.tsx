@@ -5,6 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 import Map from '../map/Map';
 import axios from 'axios';
 import { useAuth } from '../../comp/AuthProvider';
+import { AddressMap } from './Geocoding';
 
 interface MemberProfile {
   NUM: number;
@@ -18,13 +19,17 @@ const Alarm: React.FC = () => {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [memberprofile, setMemberProfile] = useState<MemberProfile[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [friends, setFriends] = useState<any[]>([]);
   const { member } = useAuth();
-
   const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
-
   //alarm 첫 화면 마운트 시
   useEffect(() => {
+    if (!member) return;
     setCategory('like');
+    axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/like/mylike`,
+      { withCredentials: true }
+    ).then(res => setFriends(res.data));
   }, []);
 
   //나이 함수
@@ -48,7 +53,7 @@ const Alarm: React.FC = () => {
         try {
           const url = `${process.env.REACT_APP_BACK_END_URL}/api/like/incoming`;
           const resp = await axios.get(url, {
-            params: { nickname: member?.nickname }
+            params: { nickname: member?.nickname }, withCredentials: true
           });
           console.log(resp.data);
           setMemberProfile(resp.data);
@@ -61,7 +66,7 @@ const Alarm: React.FC = () => {
         try {
           const url = `${process.env.REACT_APP_BACK_END_URL}/api/date/incoming`;
           const resp = await axios.get(url, {
-            params: { nickname: member?.nickname }
+            params: { nickname: member?.nickname }, withCredentials: true
           });
           console.log(resp.data);
           setMemberProfile(resp.data);
@@ -75,6 +80,22 @@ const Alarm: React.FC = () => {
     fetchData();
   }, [category]);
 
+  const denyLike = () => {
+
+  }
+
+  const denyDate = () => {
+
+  }
+
+  const receiveLike = () => {
+
+  }
+
+  const receiveDate = () => {
+
+  }
+
   // modal
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
@@ -83,16 +104,6 @@ const Alarm: React.FC = () => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setMenu(e.currentTarget.id)
     setShow(true)
-  };
-
-  //date 요청시 map 정보
-  const renderContent = (menu: string) => {
-    switch (menu) {
-      case 'mapp':
-        return <Map />;
-      default:
-        return null;
-    }
   };
 
   return (
@@ -115,7 +126,7 @@ const Alarm: React.FC = () => {
               </div>
               <br />
               <div style={{ textAlign: 'center' }}>
-                <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton}>싫어요</button>
+                <button id='mapp' className={styles.likebutton} onClick={handleClick}>위치보기</button> <button className={styles.dislikebutton} onClick={denyDate}>싫어요</button>
               </div></>
             ))
           }
@@ -131,7 +142,7 @@ const Alarm: React.FC = () => {
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
-              <button className={styles.likebutton}>좋아요</button> <button className={styles.dislikebutton}>싫어요</button>
+              <button className={styles.likebutton} onClick={receiveLike}>좋아요</button> <button className={styles.dislikebutton} onClick={denyLike}>싫어요</button>
             </div></>
           ))
           }
@@ -149,10 +160,14 @@ const Alarm: React.FC = () => {
           <Modal.Title>{menu}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {show && (<>{renderContent(menu)}<div style={{ textAlign: 'center' }}><p>상세주소 : ~~~~~</p></div></>)}
+          {show && (
+            <>
+              <AddressMap address={memberprofile[0].LOCATION?.split(',')[0] || ''} />
+              <div style={{ textAlign: 'center' }}><p>상세주소 : {memberprofile[0].LOCATION?.split(',')[1]}</p></div>
+            </>)}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="primary" >
+          <Button variant="primary" onClick={receiveDate}>
             Date
           </Button>
           <Button variant="secondary" onClick={handleClose}>
