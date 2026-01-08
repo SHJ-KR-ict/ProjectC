@@ -93,8 +93,6 @@ const MatchingHome: React.FC = () => {
     }
 
     useEffect(() => {
-        //const navigation = window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-
         const saved = sessionStorage.getItem('matchingSearchData');
         if (saved) {
             const p = JSON.parse(saved);
