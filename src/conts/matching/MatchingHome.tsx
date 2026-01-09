@@ -86,12 +86,12 @@ const MatchingHome: React.FC = () => {
                 data: matchingList.filter((m: any) => !mylike.has(m.NUM))
             }
             console.log(response.data);
-            setMatchingList(response.data.data);
-            setTotalItems(response.data.totalItems);
-            setTotalPages(response.data.totalPages);
-            setCurrentPage(response.data.currentPage);
-            setStartPage(response.data.startPage);
-            setEndPage(response.data.endPage);
+            setMatchingList(response.data);
+            setTotalItems(response.totalItems);
+            setTotalPages(response.totalPages);
+            setCurrentPage(response.currentPage);
+            setStartPage(response.startPage);
+            setEndPage(response.endPage);
             const updatedData = { ...p, ...matchingdata, city, detailSearch, currentPage: page };
             sessionStorage.setItem('matchingSearchData', JSON.stringify(updatedData));
         } catch (error) {

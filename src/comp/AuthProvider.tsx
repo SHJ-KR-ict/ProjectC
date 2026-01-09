@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             if (res.data?.id) {
                 setMember(res.data);// 데이터 저장
-                console.log(res.data)
+                console.log(res.data);
             } else {
                 setMember(null);
             }
