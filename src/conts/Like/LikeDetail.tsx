@@ -66,6 +66,7 @@ const LikeDetail: React.FC = () => {
       });
     }
   }, []);
+  
   return (
     <div className={style.container}>
       <h3 className={style.title}></h3>

@@ -69,16 +69,23 @@ const MatchingHome: React.FC = () => {
                 axios.post(matchingurls, matchingdata, {
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    }, withCredentials: true
                 }),
-                axios.get(likeurls, { params: { nickname: member?.nickname }, withCredentials: true })
+                axios.post(likeurls, matchingdata, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, withCredentials: true
+                })
             ]);
 
-            const mylike = new Set(likeresp.data.map((like: any) => like.NUM));
-            const response = matchingresp.data.data.filter((match: any) => !mylike.has(match.NUM));
-
-            console.log((response.data));
-            console.log(response.data.currentPage);
+            const matchingList = matchingresp.data.data || [];
+            const likeList = likeresp.data.data || [];
+            const mylike = new Set(likeList.map((like: any) => like.NUM));
+            const response = {
+                ...matchingresp.data,
+                data: matchingList.filter((m: any) => !mylike.has(m.NUM))
+            }
+            console.log(response.data);
             setMatchingList(response.data.data);
             setTotalItems(response.data.totalItems);
             setTotalPages(response.data.totalPages);

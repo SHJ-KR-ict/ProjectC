@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './headers.css'
 import DropdownNav from './DropdownNav'
 import DropdownNavService from './DropdownNavService'
 import { useNavigate } from 'react-router-dom'
 import DropdownChart from '../conts/chart_ui/DropdownChart'
+import { useAuth } from './AuthProvider'
 
 
 interface LayoutProps {
@@ -11,12 +12,22 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+    const { member, logout } = useAuth();
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
     const navigate = useNavigate();
 
     const loginNav = () => {
         navigate("/login")
     }
+    const handleLogout = async () => {
+        await logout();
+        alert('로그아웃 되었습니다');
+        navigate('/');
+    }
+
+    useEffect(() => {
+        console.log(member);
+    }, [])
     return (
 
         <div>
@@ -41,9 +52,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                 <li><DropdownNavService /></li>
                             </ul>
                             <div className="text-end">
-                                <button type="button" className="login-btn" onClick={loginNav}>Login</button>
-                                <a href="/alarm"><img src="/home/alarm.jpg" alt="1" style={{ width: '45px', paddingLeft: '8px' }} /></a>
-                                <a href="/mypage"><img src="/imgs/Default_user.jpg" alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
+                                {
+                                    !member && <button type="button" className="login-btn" onClick={loginNav}>Login</button>
+                                }
+                                {
+                                    member && <><a href="/alarm"><img src="/home/alarm.jpg" alt="1" style={{ width: '45px', paddingLeft: '8px' }} /></a>
+                                        <a href="/mypage"><img src="/imgs/Default_user.jpg" alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
+                                        <button type="button" className="login-btn" onClick={handleLogout}>Logout</button></>
+                                }
                             </div>
                         </div>
                     </div>

@@ -43,7 +43,6 @@ const MatchingDetail: React.FC = () => {
             } finally {
                 setLoading(false);
             }
-
         }
         fetchData();
     }, [id]);
