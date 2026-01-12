@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styles from './MatchingHome.module.css'
 import axios from 'axios';
+import { useAuth } from '../../comp/AuthProvider';
 
 interface MatchingVO {
     num: number;
@@ -12,10 +13,11 @@ interface MatchingVO {
 
 const MatchingDetail: React.FC = () => {
     const [matchingDetail, setMatchingDetail] = useState<MatchingVO>();
+    const { member } = useAuth();
     const { id } = useParams<{ id: string }>();
     const [loading, setLoading] = useState(true);
     const [members, setMembers] = useState<any[]>([]);
-    const [selected, setSelected] = useState<Set<string>>(new Set());
+
     const [incoming, setIncoming] = useState<any[]>([]);
     const [friends, setFriends] = useState<any[]>([]);
     const [outgoing, setOutgoing] = useState<any[]>([]);
@@ -48,10 +50,9 @@ const MatchingDetail: React.FC = () => {
     }, [id]);
 
     const sendRequest = async () => {
-        const receiverId = matchingDetail?.nickname
+        const receiverId = matchingDetail?.nickname;
         await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/request`, { receiverId }, { withCredentials: true });
         alert("Like 신청 완료");
-        setSelected(new Set());
         setRefresh(prev => prev + 1);
     }
 
@@ -67,12 +68,15 @@ const MatchingDetail: React.FC = () => {
                 </span>
             </div>
             <div style={{ textAlign: 'center' }}>
-                <button className={styles.likebutton} onClick={sendRequest} style={{fontSize:'x-large', padding:'10px 20px'}}>Like</button>
+                <button className={styles.likebutton} onClick={sendRequest} style={{ fontSize: 'x-large', padding: '10px 20px' }}>Like</button>
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
                 <button className={styles.button} onClick={() => { navigate(-1) }}>돌아가기</button>
             </div>
+            {
+                !loading&&<div>로딩 중 입니다...</div>
+            }
         </div>
     )
 }

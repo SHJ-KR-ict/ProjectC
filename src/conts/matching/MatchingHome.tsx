@@ -157,7 +157,7 @@ const MatchingHome: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title} style={{ fontWeight: 'bold', marginBottom: 30 }}>당신의 PICK은 무엇인가요?</h2>
+            <h2 className={styles.title} style={{ fontWeight: 'bold', marginBottom: 30 }}>{member?.nickname}님의 PICK은 무엇인가요?</h2>
             <div className={styles.grid}>
                 {/*리스트*/}
                 {matchingList.map(item => (

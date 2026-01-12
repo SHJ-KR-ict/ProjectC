@@ -33,14 +33,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const res = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/login/session`, {
                 withCredentials: true
             });
-            if (res.data?.id) {
+            if (res.data.nickname) {
                 setMember(res.data);// 데이터 저장
                 console.log(res.data);
             } else {
                 setMember(null);
+                console.log('data 없음')
             }
         } catch (error) {
             setMember(null);
+            console.error(error);
         }
     }
 

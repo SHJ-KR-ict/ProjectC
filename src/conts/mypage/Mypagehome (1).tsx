@@ -11,8 +11,10 @@ import MyQna from '../faq/MyQna'
 import { Button, Modal } from 'react-bootstrap'
 import Mypageimage from './MypageImage'
 import Loginlog from '../login/Loginlog'
+import { useAuth } from '../../comp/AuthProvider'
 
 const Mypagehome: React.FC = () => {
+  const { member } = useAuth();
   const navigate = useNavigate()
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
@@ -54,7 +56,7 @@ const Mypagehome: React.FC = () => {
     <div>
       <section className={style.mypageContainer}>
         <div className={style.fading}>
-        <h3 className={style.title} >마이페이지</h3></div>
+          <h3 className={style.title} >{member?.nickname}님의 마이페이지</h3></div>
 
         {/* 상단 영역 */}
         <div className={style.topArea}>
@@ -67,7 +69,7 @@ const Mypagehome: React.FC = () => {
                 alt="user"
               />
               <button id='Image' className={style.addBtn} onClick={handleClick}>+</button>
-              <div className={style.username}>Sally</div>
+              <div className={style.username}>{member?.nickname}</div>
               <p>다들 좋은 하루 되세요</p>
             </div>
 

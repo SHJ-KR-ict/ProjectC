@@ -19,14 +19,14 @@ interface MemberProfile {
 const Alarm: React.FC = () => {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
-  const [memberprofile, setMemberProfile] = useState<MemberProfile[]>([]);
+  const [likeprofile, setLikeProfile] = useState<MemberProfile[]>([]);
+  const [dateprofile, setDateProfile] = useState<MemberProfile[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { member } = useAuth();
   const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
 
   //alarm 첫 화면 마운트 시
   useEffect(() => {
-    if (!member) return;
     setCategory('like');
   }, []);
 
@@ -51,10 +51,12 @@ const Alarm: React.FC = () => {
         try {
           const url = `${process.env.REACT_APP_BACK_END_URL}/api/like/incoming`;
           const resp = await axios.get(url, {
-            params: { nickname: member?.nickname }, withCredentials: true
+            withCredentials: true
           });
           console.log(resp.data);
-          setMemberProfile(resp.data);
+          const exceptme = resp.data.filter((req: any) => req.NICKNAME !== member?.nickname);
+          console.log(exceptme);
+          setLikeProfile(exceptme);
         } catch (error) {
           console.log("데이터 요청 실패: ", error)
         } finally {
@@ -64,10 +66,10 @@ const Alarm: React.FC = () => {
         try {
           const url = `${process.env.REACT_APP_BACK_END_URL}/api/date/incoming`;
           const resp = await axios.get(url, {
-            params: { nickname: member?.nickname }, withCredentials: true
+            withCredentials: true
           });
           console.log(resp.data);
-          setMemberProfile(resp.data);
+          setDateProfile(resp.data);
         } catch (error) {
           console.log("데이터 요청 실패: ", error)
         } finally {
@@ -76,7 +78,7 @@ const Alarm: React.FC = () => {
       }
     }
     fetchData();
-  }, [category]);
+  }, [category,member]);
 
   const likeResponse = async (id: number, action: string) => {
     await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { id, action }, { withCredentials: true });
@@ -91,6 +93,7 @@ const Alarm: React.FC = () => {
     setCategory('date');
   }
 
+
   // modal
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
@@ -103,7 +106,7 @@ const Alarm: React.FC = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>alarm</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>{member?.nickname}님의 Alarm</h2>
       <div style={{ textAlign: 'center', fontSize: '30px', height: '50px' }}>
         <button className={styles.button} id='like' type='button' onClick={() => { setCategory('like') }}>Like 요청</button>
         <button className={styles.button} id='date' type='button' onClick={() => { setCategory('date') }}>Date 요청</button>
@@ -112,7 +115,7 @@ const Alarm: React.FC = () => {
       {
         category === 'date' && (<div style={{ margin: '30px auto' }}>
           {
-            memberprofile.map((e, i) => (<React.Fragment key={i}>
+            dateprofile.map((e, i) => (<React.Fragment key={i}>
               <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
                 <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
                 <div className={styles.cardTitle}>{e.NICKNAME}님의 Date 요청</div>
@@ -130,7 +133,7 @@ const Alarm: React.FC = () => {
       }
       {
         category === 'like' && (<div style={{ margin: '30px auto' }}>
-          {memberprofile.map((e,i) => (<React.Fragment key={i}>
+          {likeprofile.map((e, i) => (<React.Fragment key={i}>
             <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
               <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
               <div className={styles.cardTitle}>{e.NICKNAME}</div>
@@ -159,12 +162,12 @@ const Alarm: React.FC = () => {
         <Modal.Body>
           {show && (
             <>
-              <AddressMap address={memberprofile[selectedIndex].LOCATION?.split(',')[0] || ''} />
-              <div style={{ textAlign: 'center' }}><p>상세주소 : {memberprofile[selectedIndex].LOCATION?.split(',')[1]}</p></div>
+              <AddressMap address={dateprofile[selectedIndex].LOCATION?.split(',')[0] || ''} />
+              <div style={{ textAlign: 'center' }}><p>상세주소 : {dateprofile[selectedIndex].LOCATION?.split(',')[1]}</p></div>
             </>)}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="primary" onClick={() => { dateResponse(memberprofile[selectedIndex].ID, 'accept') }}>
+          <Button variant="primary" onClick={() => { dateResponse(dateprofile[selectedIndex].ID, 'accept') }}>
             Date
           </Button>
           <Button variant="secondary" onClick={handleClose}>

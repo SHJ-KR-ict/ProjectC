@@ -7,9 +7,11 @@ import Survey from '../survey/Survey'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import { useAuth } from '../../comp/AuthProvider'
 
 const Home: React.FC = () => {
-  const navigate = useNavigate()
+  const { member } = useAuth();
+  const navigate = useNavigate();
 
   const settings = {
     dots: false,
@@ -86,12 +88,17 @@ const Home: React.FC = () => {
                 <p className="home-subtitle">{item.subtitle}</p>
 
                 <div className="btn-group">
-                  <button className="main-btn" onClick={signupnav}>
-                    계정 만들기
-                  </button>
-                  <button className="main-btn outline" onClick={() => { navigate('/matchingHome'); sessionStorage.removeItem('matchingSearchData'); }}>
-                    매칭하기
-                  </button>
+                  {
+                    !member && <button className="main-btn" onClick={signupnav}>
+                      계정 만들기
+                    </button>
+                  }
+                  {
+                    member && <button className="main-btn outline" onClick={() => { navigate('/matchingHome'); sessionStorage.removeItem('matchingSearchData'); }}>
+                      매칭하기
+                    </button>
+                  }
+
                 </div>
               </div>
             </div>
