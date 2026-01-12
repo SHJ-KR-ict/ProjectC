@@ -120,7 +120,7 @@ const LikeHome: React.FC = () => {
           <Link to={`/like/detail/${e.NUM}`} style={{ textDecoration: 'none' }} key={i}>
             <div className={styles.card}>
               <img src={`${imageBasePath}${e.PROFILEIMAGE}`} />
-              {e.NICKNAME} {getAge(e.BIRTH)}
+              {e.NICKNAME} {getAge(e.BIRTH)}세
             </div>
           </Link>
         ))

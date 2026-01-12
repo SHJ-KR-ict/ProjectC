@@ -78,16 +78,16 @@ const Alarm: React.FC = () => {
       }
     }
     fetchData();
-  }, [category,member]);
+  }, [category, member]);
 
-  const likeResponse = async (id: number, action: string) => {
-    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { id, action }, { withCredentials: true });
+  const likeResponse = async (nickname: string, action: string) => {
+    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { nickname, action }, { withCredentials: true });
     alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
     window.location.reload();
   }
 
-  const dateResponse = async (id: number, action: string) => {
-    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { id, action }, { withCredentials: true });
+  const dateResponse = async (nickname: string, action: string) => {
+    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { nickname, action }, { withCredentials: true });
     alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
     window.location.reload();
     setCategory('date');
@@ -124,7 +124,7 @@ const Alarm: React.FC = () => {
               <br />
               <div style={{ textAlign: 'center' }}>
                 <button id='mapp' className={styles.likebutton} onClick={(entry) => { handleClick(entry); setSelectedIndex(i) }}>위치보기</button>
-                <button className={styles.dislikebutton} onClick={() => { dateResponse(e.ID, 'reject') }}>싫어요</button>
+                <button className={styles.dislikebutton} onClick={() => { dateResponse(e.NICKNAME, 'reject') }}>싫어요</button>
               </div>
             </React.Fragment>
             ))
@@ -141,8 +141,8 @@ const Alarm: React.FC = () => {
             </div>
             <br />
             <div style={{ textAlign: 'center' }}>
-              <button className={styles.likebutton} onClick={() => { likeResponse(e.ID, 'accept') }}>좋아요</button>
-              <button className={styles.dislikebutton} onClick={() => { likeResponse(e.ID, 'reject') }}>싫어요</button>
+              <button className={styles.likebutton} onClick={() => { likeResponse(e.NICKNAME, 'accept') }}>좋아요</button>
+              <button className={styles.dislikebutton} onClick={() => { likeResponse(e.NICKNAME, 'reject') }}>싫어요</button>
             </div></React.Fragment>
           ))
           }
@@ -167,7 +167,7 @@ const Alarm: React.FC = () => {
             </>)}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="primary" onClick={() => { dateResponse(dateprofile[selectedIndex].ID, 'accept') }}>
+          <Button variant="primary" onClick={() => { dateResponse(dateprofile[selectedIndex].NICKNAME, 'accept') }}>
             Date
           </Button>
           <Button variant="secondary" onClick={handleClose}>
