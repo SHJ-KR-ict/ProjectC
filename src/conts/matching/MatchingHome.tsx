@@ -282,7 +282,7 @@ const MatchingHome: React.FC = () => {
                     검색옵션
                 </button>
                 {/*세부검색*/}
-                {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '60%', margin: '0 auto', marginTop: '10px' }}>
+                {detailSearch && <div style={{ padding: '20px', backgroundColor: '#e9e9e9', borderRadius: '10px', marginBottom: '20px', width: '50%', margin: '0 auto', marginTop: '10px' }}>
                     <div style={{ marginBottom: '10px' }}>
                         <label><input type="checkbox" checked={matchingTypeList.includes(1)}
                             onChange={() => {
@@ -357,8 +357,8 @@ const MatchingHome: React.FC = () => {
                                 handleTypeToggle(9)
                             }} /> 흡연 </label>
                     </div>
-
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    {/*국적*/}
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         {matchingTypeList.includes(1) && (
                             <select
                                 onChange={(e) =>
@@ -371,7 +371,7 @@ const MatchingHome: React.FC = () => {
                                 <option value="일본">일본</option>
                             </select>
                         )}
-
+                        {/*거주지*/}
                         {matchingTypeList.includes(2) && (
                             <>
                                 <select value={city} onChange={(e) => {
