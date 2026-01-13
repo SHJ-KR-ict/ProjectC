@@ -12,14 +12,16 @@ import { Button, Modal } from 'react-bootstrap'
 import Mypageimage from './MypageImage'
 import Loginlog from '../login/Loginlog'
 import { useAuth } from '../../comp/AuthProvider'
+import axios from 'axios'
 
 const Mypagehome: React.FC = () => {
   const { member } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [profileimage, setProfileImage] = useState('');
   const [show, setShow] = useState(false);
   const [menu, setMenu] = useState('');
   const [selectedMenu, setSelectedMenu] = useState<React.ReactElement>()
-
+  const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
   const renderContent = (menu: string) => {
     switch (menu) {
       case 'Chart':
@@ -42,6 +44,18 @@ const Mypagehome: React.FC = () => {
         return <Loginlog />
     }
   }
+  useEffect(() => {
+    const getprofileimage = async () => {
+      try {
+        const url = `${process.env.REACT_APP_BACK_END_URL}/matching/getimage`;
+        const resp = await axios.get(url, { withCredentials: true });
+        setProfileImage(resp.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getprofileimage();
+  }, []);
 
   useEffect(() => {
     setSelectedMenu(renderContent(menu));
@@ -65,7 +79,7 @@ const Mypagehome: React.FC = () => {
             <div className={style.profileSection}>
               <img
                 className={style.profileImg}
-                src="/imgs/Default_user.jpg"
+                src={`${imageBasePath}${profileimage}`}
                 alt="user"
               />
               <button id='Image' className={style.addBtn} onClick={handleClick}>+</button>

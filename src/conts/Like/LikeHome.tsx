@@ -126,7 +126,7 @@ const LikeHome: React.FC = () => {
         ))
         }
       </div>
-
+        <br />
       {/*페이징*/}
       <div>
         <nav>

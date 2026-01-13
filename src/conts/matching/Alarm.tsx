@@ -13,7 +13,7 @@ interface MemberProfile {
   BIRTH: string;
   PROFILEIMAGE: string;
   ID: number;
-  LOCATION?: string;
+  DATE_LOCATION?: string;
 }
 
 const Alarm: React.FC = () => {
@@ -81,18 +81,27 @@ const Alarm: React.FC = () => {
   }, [category, member]);
 
   const likeResponse = async (nickname: string, action: string) => {
-    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { nickname, action }, { withCredentials: true });
-    alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
-    window.location.reload();
+    try {
+      await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { nickname, action }, { withCredentials: true });
+      alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+
   }
 
   const dateResponse = async (nickname: string, action: string) => {
-    await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { nickname, action }, { withCredentials: true });
-    alert(`${action === 'accept' ? '수락' : '거절'} 처리됨`);
-    window.location.reload();
-    setCategory('date');
+    try {
+      const resp = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { nickname, action }, { withCredentials: true });
+      const status = resp.data;
+      alert(`${action === 'accept' ? '수락처리됨' : action === 'reject' ? '거절처리됨' : `${member?.nickname}님 또는 상대방이 이미 다른 데이트를 진행 중입니다.`}`);
+      window.location.reload();
+      setCategory('date');
+    } catch (error) {
+      console.error(error);
+    }
   }
-
 
   // modal
   const [show, setShow] = useState(false);
@@ -119,11 +128,11 @@ const Alarm: React.FC = () => {
               <div className={styles.card} style={{ width: '500px', margin: '20px auto', textAlign: 'center' }}>
                 <img src={`${imageBasePath}${e.PROFILEIMAGE}`} alt='' />
                 <div className={styles.cardTitle}>{e.NICKNAME}님의 Date 요청</div>
-                <div className={styles.cardTitle}>{e.LOCATION}에서 만나요</div>
+                <div className={styles.cardTitle}>{e.DATE_LOCATION}에서 만나요</div>
               </div>
               <br />
               <div style={{ textAlign: 'center' }}>
-                <button id='mapp' className={styles.likebutton} onClick={(entry) => { handleClick(entry); setSelectedIndex(i) }}>위치보기</button>
+                <button id='mapp' className={styles.likebutton} onClick={(e) => { handleClick(e); setSelectedIndex(i) }}>위치보기</button>
                 <button className={styles.dislikebutton} onClick={() => { dateResponse(e.NICKNAME, 'reject') }}>싫어요</button>
               </div>
             </React.Fragment>
@@ -160,11 +169,14 @@ const Alarm: React.FC = () => {
           <Modal.Title>{menu}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {show && (
+          {show && dateprofile[selectedIndex]?.DATE_LOCATION ? (
             <>
-              <AddressMap address={dateprofile[selectedIndex].LOCATION?.split(',')[0] || ''} />
-              <div style={{ textAlign: 'center' }}><p>상세주소 : {dateprofile[selectedIndex].LOCATION?.split(',')[1]}</p></div>
-            </>)}
+              <AddressMap address={dateprofile[selectedIndex].DATE_LOCATION?.split(',')[0] || ''} />
+              <div style={{ textAlign: 'center' }}><p>상세주소 : {dateprofile[selectedIndex].DATE_LOCATION?.split(',')[1]}</p></div>
+            </>) : (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+              위치 정보를 불러올 수 없습니다.
+            </div>)}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
           <Button variant="primary" onClick={() => { dateResponse(dateprofile[selectedIndex].NICKNAME, 'accept') }}>

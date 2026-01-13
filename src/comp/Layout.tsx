@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './headers.css'
 import DropdownNav from './DropdownNav'
 import DropdownNavService from './DropdownNavService'
 import { useNavigate } from 'react-router-dom'
 import DropdownChart from '../conts/chart_ui/DropdownChart'
 import { useAuth } from './AuthProvider'
+import axios from 'axios'
 
 
 interface LayoutProps {
@@ -13,6 +14,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { member, logout } = useAuth();
+    const [profileimage, setProfileImage] = useState('');
     const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
     const navigate = useNavigate();
 
@@ -26,8 +28,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
 
     useEffect(() => {
-        console.log(member);
-    }, [])
+        const getprofileimage = async () => {
+            try {
+                const url = `${process.env.REACT_APP_BACK_END_URL}/matching/getimage`;
+                const resp = await axios.get(url, { withCredentials: true });
+                setProfileImage(resp.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getprofileimage();
+    }, []);
     return (
 
         <div>
@@ -57,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                 }
                                 {
                                     member && <><a href="/alarm"><img src="/home/alarm.jpg" alt="1" style={{ width: '45px', paddingLeft: '8px' }} /></a>
-                                        <a href="/mypage"><img src="/imgs/Default_user.jpg" alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
+                                        <a href="/mypage"><img src={`${imageBasePath}${profileimage}`} alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
                                         <button type="button" className="login-btn" onClick={handleLogout}>Logout</button></>
                                 }
                             </div>

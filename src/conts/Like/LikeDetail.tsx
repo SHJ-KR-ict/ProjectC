@@ -39,9 +39,9 @@ const LikeDetail: React.FC = () => {
   const navigate = useNavigate();
   const { num } = useParams<{ num: string }>();
   const [show, setShow] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState<React.ReactElement>();
   const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
 
+  //첫 화면 마운트시 likedetail 불러옴
   useEffect(() => {
     const likedetail = async () => {
       try {
@@ -54,7 +54,7 @@ const LikeDetail: React.FC = () => {
     }
     likedetail();
   }, []);
-
+  // 나이 계산 함수
   const getAge = (birth: string): number => {
     const birthDate = new Date(birth);
     const today = new Date();
@@ -67,20 +67,22 @@ const LikeDetail: React.FC = () => {
     }
     return age;
   };
-
+  // modal용 함수
   const handleClose = () => { setShow(false); }
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShow(true)
     console.log(show)
   };
-
+  // like 취소 함수
   const likeDel = async (nickname: string, action: string) => {
     await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/like/respond`, { nickname, action }, { withCredentials: true });
     alert('삭제 처리됨');
     navigate(-1);
   }
 
+  // 지도 및 위치 저장 함수
   const [address, setAddress] = useState<string>('');
+  const [detailaddr, setDetailAddr] = useState<string>();
   useEffect(() => {
     const { naver } = window;
 
@@ -117,7 +119,31 @@ const LikeDetail: React.FC = () => {
         });
       });
     }
-  }, []);
+  }, [show]);
+
+  // date 신청 함수
+  const dateRequest = async () => {
+    const fullLocation = `${address},${detailaddr}`;
+    try {
+      const url = `${process.env.REACT_APP_BACK_END_URL}/api/date/request`;
+      const data = {
+        receiverId: profile?.NICKNAME,
+        location: fullLocation
+      };
+      const resp = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }, withCredentials: true
+      });
+      console.log(resp.data);
+      alert("데이트 신청이 완료되었습니다!");
+      console.log('위치' + address + detailaddr + '로 신청이 되었습니다');
+      setDetailAddr('');
+      handleClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className={style.container}>
@@ -127,7 +153,7 @@ const LikeDetail: React.FC = () => {
           <img src={`${imageBasePath}${profile?.PROFILEIMAGES[0]}`} className={style.image} />
         </div>
         <div style={{ margin: '20px auto' }}>
-          <p>{member?.nickname} {getAge(profile?.BIRTH || '')}세</p>
+          <p>{profile?.NICKNAME} {getAge(profile?.BIRTH || '')}세</p>
           <p>{profile?.ADDRESS} 살아요 </p>
           <p>연락은 {profile?.PHONE || ''}</p>
           <p>#취미는 {profile?.HOBBY} #술은 {profile?.DRINKING} 마셔요 #MBTI는 {profile?.MBTI} #종교는 {profile?.RELIGION} #흡연은 {profile?.SMOKING}</p>
@@ -152,10 +178,10 @@ const LikeDetail: React.FC = () => {
           <Modal.Title>date 신청</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {show && <><Map /><div style={{ textAlign: 'center' }}>상세주소 : <input type="text" name="detailaddr" id="detailaddr" style={{ height: '30px' }} /></div></>}
+          {show && <><Map /><div style={{ textAlign: 'center' }}>상세주소 : <input type="text" name="detailaddr" id="detailaddr" style={{ height: '30px' }} onChange={(e) => { setDetailAddr(e.target.value) }} /></div></>}
         </Modal.Body>
         <Modal.Footer style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="primary" >
+          <Button variant="primary" onClick={dateRequest}>
             Date
           </Button>
           <Button variant="secondary" onClick={handleClose}>
@@ -164,9 +190,6 @@ const LikeDetail: React.FC = () => {
         </Modal.Footer>
       </Modal>
     </div >
-
-
-
 
   );
 };
