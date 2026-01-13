@@ -13,6 +13,7 @@ import Mypageimage from './MypageImage'
 import Loginlog from '../login/Loginlog'
 import { useAuth } from '../../comp/AuthProvider'
 import axios from 'axios'
+import MyDate from '../date/Mydate'
 
 const Mypagehome: React.FC = () => {
   const { member } = useAuth();
@@ -42,6 +43,8 @@ const Mypagehome: React.FC = () => {
         return <Mypageimage />
       case 'LoginLog':
         return <Loginlog />
+      case 'MyDate':
+        return <MyDate setShow={setShow} />
     }
   }
   useEffect(() => {
@@ -134,7 +137,7 @@ const Mypagehome: React.FC = () => {
             내 문의
           </button>
           <button id='LoginLog' className={style.menuBtn} onClick={handleClick}>로그인 기록</button>
-          <button className={style.danger}>회원 탈퇴</button>
+          <button id='MyDate' className={style.danger} onClick={handleClick}>Date</button>
         </div>
 
       </section>

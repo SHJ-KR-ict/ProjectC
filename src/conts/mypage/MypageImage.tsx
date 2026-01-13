@@ -1,33 +1,20 @@
 import React, { useState } from 'react'
+import { useAuth } from '../../comp/AuthProvider';
+import axios from 'axios';
 
 interface UpBoardVO {
   num?: number;
-  title: string;
-  writer: string;
-  content: string;
   imgn?: string;
-  hit?: number;
-  reip?: string;
-  bdate?: string;
   mfile: File | null;
-
 }
 
 const Mypageimage: React.FC = () => {
+  const { member } = useAuth();
   const [formData, setFormData] = useState<UpBoardVO>({
-    title: '',
-    writer: '',
-    content: '',
     mfile: null as File | null
   });
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
-  const formChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
-    const { name, value } = e.target
-
-    setFormData({ ...formData, [name]: value })
-
-  }
   const fileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0];
@@ -42,12 +29,46 @@ const Mypageimage: React.FC = () => {
     }
   }
 
+  const ProfileUpdate = async () => {
+    if (!formData.mfile) {
+      alert("업로드할 파일을 선택해주세요.");
+      return;
+    }
+
+    const Data = new FormData();
+
+    Data.append("profile", formData.mfile);
+    Data.append("userid", String(member?.num));
+
+    try {
+      const url = `${process.env.REACT_APP_BACK_END_URL}/matching/profileup`;
+      const resp = await axios.post(url, Data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true
+      });
+      if (resp.status === 200) {
+        alert("정상적으로 이미지가 바뀌었습니다");
+        window.location.reload();
+      }
+      console.log(resp.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <div>
       <input type="file" name="mfile" id="mfile" onChange={fileChange} required />
       {preview &&
-        (<div><img src={preview as string} alt='' style={{ width: '150px', height: '150px', marginRight: '10px', marginBottom: '10px', marginTop:'30px'}} /></div>)
+        (<div><img src={preview as string} alt='' style={{ width: '150px', height: '150px', marginRight: '10px', marginBottom: '10px', marginTop: '30px' }} /></div>)
       }
+      <div style={{ marginTop: '20px' }}>
+        <button onClick={ProfileUpdate}
+          style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}>
+          프로필 사진 변경하기
+        </button>
+      </div>
     </div>
   )
 }

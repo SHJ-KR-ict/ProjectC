@@ -28,6 +28,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
 
     useEffect(() => {
+        if (!member?.nickname) {
+            return;
+        }
         const getprofileimage = async () => {
             try {
                 const url = `${process.env.REACT_APP_BACK_END_URL}/matching/getimage`;
@@ -38,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             }
         }
         getprofileimage();
-    }, []);
+    }, [member]);
     return (
 
         <div>
