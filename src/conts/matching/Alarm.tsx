@@ -95,7 +95,7 @@ const Alarm: React.FC = () => {
     try {
       const resp = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/date/respond`, { nickname, action }, { withCredentials: true });
       const status = resp.data;
-      alert(`${action === 'accept' ? '수락처리됨' : action === 'reject' ? '거절처리됨' : `${member?.nickname}님 또는 상대방이 이미 다른 데이트를 진행 중입니다.`}`);
+      alert(`${status === 'accepted' ? '수락처리됨' : action === 'reject' ? '거절처리됨' : `${member?.nickname}님 또는 상대방이 이미 다른 데이트를 진행 중입니다.`}`);
       window.location.reload();
       setCategory('date');
     } catch (error) {

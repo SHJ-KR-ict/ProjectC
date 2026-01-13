@@ -83,7 +83,7 @@ const MyDate: React.FC<MyDateProps> = ({ setShow }) => {
                 <p className="mb-3 small text-secondary">{date?.DATE_LOCATION.replace(',', ' ')}</p>
                 <div className="d-grid gap-2">
                     <Button variant="danger" size="sm" onClick={() => { CancelDate(date?.NICKNAME || '') }}>
-                        데이트 취소하기
+                        데이트 종료
                     </Button>
                     <Button variant="outline-secondary" size="sm" onClick={() => setShow(false)}>
                         닫기

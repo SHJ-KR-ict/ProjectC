@@ -136,10 +136,14 @@ const LikeDetail: React.FC = () => {
         }, withCredentials: true
       });
       console.log(resp.data);
-      alert("데이트 신청이 완료되었습니다!");
-      console.log('위치' + address + detailaddr + '로 신청이 되었습니다');
-      setDetailAddr('');
-      handleClose();
+      if (resp.data === "already") {
+        alert(`${member?.nickname}님 또는 상대방이 이미 데이트 중입니다.`);
+      } else {
+        alert("데이트 신청이 완료되었습니다!");
+        console.log(fullLocation + '로 데이트 신청을 했습니다');
+        setDetailAddr('');
+        handleClose();
+      }
     } catch (error) {
       console.error(error);
     }
