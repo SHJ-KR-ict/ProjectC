@@ -40,6 +40,30 @@ const MatchingHome: React.FC = () => {
         '울산': ['남구', '동구', '북구', '울주군', '중구'],
     };
 
+    const HEIGHT = [
+        { label: '160cm 미만', low: 0, high: 159 },
+        { label: '160cm ~ 169cm', low: 160, high: 169 },
+        { label: '170cm ~ 179cm', low: 170, high: 179 },
+        { label: '180cm 이상', low: 180, high: 250 },
+    ];
+
+    const WEIGHT = [
+        { label: '50kg 미만', low: 0, high: 49 },
+        { label: '50kg ~ 59kg', low: 50, high: 59 },
+        { label: '60kg ~ 69kg', low: 60, high: 69 },
+        { label: '70kg ~ 79kg', low: 70, high: 79 },
+        { label: '80kg 이상', low: 80, high: 200 },
+    ];
+    const HOBBY = ['운동', '독서', '요리', '여행', '게임', '영화감상', '음악감상'];
+
+    const MBTI = ['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'];
+
+    const RELIGION = ['무교', '기독교', '불교', '천주교', '원불교', '이슬람', '기타'];
+
+    const DRINKING = ['소주', '맥주', '양주', '고량주'];
+
+    const SMOKING = ['비흡연', '흡연'];
+
     const YYYY: string[] = useMemo(() => {
         const currentYear = new Date().getFullYear();
         return Array.from({ length: 70 }, (_, i) => String(currentYear - (i)));
@@ -276,6 +300,62 @@ const MatchingHome: React.FC = () => {
                                 }
                                 handleTypeToggle(2)
                             }} /> 거주지 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(3)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(3)) {
+                                    setMatchingValue(({ height, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(3)
+                            }} /> 키 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(4)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(4)) {
+                                    setMatchingValue(({ weight, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(4)
+                            }} /> 몸무게 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(5)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(5)) {
+                                    setMatchingValue(({ hobby, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(5)
+                            }} /> 취미 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(6)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(6)) {
+                                    setMatchingValue(({ mbti, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(6)
+                            }} /> MBTI </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(7)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(7)) {
+                                    setMatchingValue(({ religion, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(7)
+                            }} /> 종교 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(8)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(8)) {
+                                    setMatchingValue(({ drinking, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(8)
+                            }} /> 음주 </label>
+                        &nbsp;&nbsp;
+                        <label><input type="checkbox" checked={matchingTypeList.includes(9)}
+                            onChange={() => {
+                                if (matchingTypeList.includes(9)) {
+                                    setMatchingValue(({ smoking, ...rest }: any) => rest)
+                                }
+                                handleTypeToggle(9)
+                            }} /> 흡연 </label>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px' }}>
@@ -313,6 +393,61 @@ const MatchingHome: React.FC = () => {
                                     {city && addressData[city].map(d => <option key={d} value={d}>{d}</option>)}
                                 </select>
                             </>
+                        )}
+                        {/* 키 */}
+                        {matchingTypeList.includes(3) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, height: e.target.value ? HEIGHT[Number(e.target.value)] : null })}>
+                                <option value="">키 선택</option>
+                                {HEIGHT.map((h, i) => <option key={i} value={i}>{h.label}</option>)}
+                            </select>
+                        )}
+
+                        {/* 몸무게*/}
+                        {matchingTypeList.includes(4) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, weight: e.target.value ? WEIGHT[Number(e.target.value)] : null })}>
+                                <option value="">몸무게 선택</option>
+                                {WEIGHT.map((w, i) => <option key={i} value={i}>{w.label}</option>)}
+                            </select>
+                        )}
+
+                        {/* 취미*/}
+                        {matchingTypeList.includes(5) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, hobby: e.target.value || null })}>
+                                <option value="">취미 선택</option>
+                                {HOBBY.map(h => <option key={h} value={h}>{h}</option>)}
+                            </select>
+                        )}
+
+                        {/* MBTI*/}
+                        {matchingTypeList.includes(6) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, mbti: e.target.value || null })}>
+                                <option value="">MBTI 선택</option>
+                                {MBTI.map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                        )}
+
+                        {/* 종교*/}
+                        {matchingTypeList.includes(7) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, religion: e.target.value || null })}>
+                                <option value="">종교 선택</option>
+                                {RELIGION.map(r => <option key={r} value={r}>{r}</option>)}
+                            </select>
+                        )}
+
+                        {/* 음주*/}
+                        {matchingTypeList.includes(8) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, drinking: e.target.value || null })}>
+                                <option value="">음주 선택</option>
+                                {DRINKING.map(d => <option key={d} value={d}>{d}</option>)}
+                            </select>
+                        )}
+
+                        {/* 흡연*/}
+                        {matchingTypeList.includes(9) && (
+                            <select onChange={(e) => setMatchingValue({ ...matchingValue, smoking: e.target.value || null })}>
+                                <option value="">흡연 여부</option>
+                                {SMOKING.map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
                         )}
                     </div>
                 </div>}
