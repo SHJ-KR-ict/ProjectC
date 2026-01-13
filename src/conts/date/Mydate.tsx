@@ -52,7 +52,7 @@ const MyDate: React.FC<MyDateProps> = ({ setShow }) => {
     if (!date) {
         return (
             <div className="p-4 text-center">
-                <p className="text-muted">확정된 데이트 일정이 없습니다.</p>
+                <p className="text-muted">데이트 일정이 없습니다.</p>
                 <Button variant="secondary" size="sm" onClick={() => setShow(false)}>닫기</Button>
             </div>
         );
