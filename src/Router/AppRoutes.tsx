@@ -25,6 +25,10 @@ import LikeDetail from '../conts/Like/LikeDetail'
 import AdminAnswer from '../conts/faq/AdminAnswer'
 import MyQna from '../conts/faq/MyQna'
 import Mypagehome from '../conts/mypage/Mypagehome (1)'
+import SurveyClient from '../conts/survey copy/SurveyClient'
+import SurveyList from '../conts/survey copy/SurveyList'
+import SurveyAddForm from '../conts/survey copy/SurveyAddForm'
+import SurveyClientResult from '../conts/survey copy/SurveyClientResult'
 
 
 const AppRoutes: React.FC = () => {
@@ -54,6 +58,10 @@ const AppRoutes: React.FC = () => {
         { path: '/like/detail/:num', element: <LikeDetail /> },
         { path: '/adminanswer', element: <AdminAnswer /> },
         { path: '/myqna', element: <MyQna /> },
+        { path: '/surveyclient/:num', element: <SurveyClient /> },
+        { path: '/surveylist', element: <SurveyList /> },
+        { path: '/surveyaddform', element: <SurveyAddForm /> },
+
     ]
 
     return (

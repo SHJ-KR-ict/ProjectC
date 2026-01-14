@@ -42,15 +42,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         }
         getprofileimage();
     }, [member]);
-    return (
 
+    return (
         <div>
             <header>
-                <div className="header">
-                    <div className="container">
+                <div className="header py-2"  >
+                    <div className="container-fluid" style={{ padding: '0 30px', marginTop: '5px' }}>
                         <div className="d-flex flex-wrap align-items-center justify-content-lg-start" style={{ justifyContent: 'center' }}>
-                            <a href="/"><img src="/image/header.png" alt="" style={{ marginTop: '13px', width: '200px', marginRight: '450px' }} /></a>
-                            <ul className="nav col-12 col-lg-auto my-2 my-md-0" style={{ justifyContent: 'center', marginLeft: 10 }}>
+                            <a href="/" className="d-flex align-items-center mb-2 mb-lg-0"><img src="/image/header.png" alt="" style={{ width: '180px', marginTop: '5px', margin: '0 600px' }} /></a>
+                            <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0" style={{ gap: '5px' }}>
                                 <li>
                                     <a href="/" className="nav-link text-white" style={{ font: 'icon', textDecoration: 'underline', textUnderlineOffset: '5px', fontWeight: 'bolder', paddingTop: '22px' }}>
                                         홈

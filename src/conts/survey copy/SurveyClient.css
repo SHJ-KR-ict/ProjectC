@@ -1,0 +1,58 @@
+/* 전체 컨테이너 스타일 */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 설문 제목 스타일 */
+  .container h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* 문항 라벨 스타일 */
+  .container .form-label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  /* 라디오 버튼 스타일 */
+  .container input[type="radio"] {
+    margin-left: 10px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  /* 버튼 스타일 */
+  .container .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .container .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 각 문항 간의 간격 */
+  .container .mb-3 {
+    margin-bottom: 20px;
+  }
+  
