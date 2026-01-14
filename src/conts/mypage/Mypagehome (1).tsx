@@ -23,6 +23,7 @@ const Mypagehome: React.FC = () => {
   const [menu, setMenu] = useState('');
   const [selectedMenu, setSelectedMenu] = useState<React.ReactElement>()
   const imageBasePath = `${process.env.REACT_APP_BACK_END_URL}/imgfile/profileimage/`;
+
   const renderContent = (menu: string) => {
     switch (menu) {
       case 'Chart':
@@ -136,8 +137,12 @@ const Mypagehome: React.FC = () => {
           <button id='FAQ' onClick={handleClick} className={style.menuBtn}>
             내 문의
           </button>
-          <button id='LoginLog' className={style.menuBtn} onClick={handleClick}>로그인 기록</button>
-          <button id='MyDate' className={style.danger} onClick={handleClick}>Date</button>
+          <button id='LoginLog' className={style.menuBtn} onClick={handleClick}>
+            로그인 기록
+          </button>
+          <button id='MyDate' className={style.danger} onClick={handleClick}>
+            Date
+          </button>
         </div>
 
       </section>
