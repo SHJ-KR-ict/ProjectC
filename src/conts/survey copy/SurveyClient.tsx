@@ -93,9 +93,13 @@ const SurveyClient: React.FC = () => {
             </div>
           ))}
         </div>
-        <div style={{display:'flex', gap:'10px'}}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <button type="submit" className="btn btn-primary">제출하기</button>
-          <button type="button" className="btn btn-primary" onClick={() => { navigate(`/surveyresult/${survey.num}`) }}>결과보기</button>
+
+        </div>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+          <button type="button" className="btn btn-primary" onClick={() => { navigate(`/surveyresult/${survey.num}`) }}> 결과보기 </button>
+          <button type="button" className="btn btn-primary" onClick={() => { navigate(`/surveylist`) }}> 목록으로 </button>
         </div>
       </form>
     </div>
