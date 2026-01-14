@@ -53,7 +53,7 @@ const SurveyClient: React.FC = () => {
       if (response.status === 200) {
         alert("설문이 성공적으로 제출되었습니다.");
 
-        navigate(`/surveyResult/${survey.num}`);
+        navigate(`/surveyresult/${survey.num}`);
       } else {
         alert("설문 제출에 실패했습니다.");
       }
@@ -72,20 +72,31 @@ const SurveyClient: React.FC = () => {
   }
 
   return (
-    <div className="container">
+    <div className="survey-detail-container">
       <h2>{survey.sub}</h2>
-      <p>문항 수: {survey.code}</p>
+      <p className="survey-meta-text">문항 수: {survey.code}</p>
 
       <form onSubmit={submitSurvey}>
-        {survey.contents.map((content, index) => (
-          <div key={index} className="mb-3">
-            <div>
-              <input type="radio" name="surveytype" value={content.surveytype}
-                onChange={(e) => setSelectedSurveyType(e.target.value)} /> {content.surveytitle}
+        <div className="survey-question-wrapper">
+          {survey.contents.map((content, index) => (
+            <div key={index} className="survey-option-item">
+              <label className="survey-option-label">
+                <input
+                  type="radio"
+                  name="surveytype"
+                  value={content.surveytype}
+                  onChange={(e) => setSelectedSurveyType(e.target.value)}
+                  required
+                />
+                <span className="option-text">{content.surveytitle}</span>
+              </label>
             </div>
-          </div>
-        ))}
-        <button type="submit" className="btn btn-primary">제출</button>
+          ))}
+        </div>
+        <div style={{display:'flex', gap:'10px'}}>
+          <button type="submit" className="btn btn-primary">제출하기</button>
+          <button type="button" className="btn btn-primary" onClick={() => { navigate(`/surveyresult/${survey.num}`) }}>결과보기</button>
+        </div>
       </form>
     </div>
   );

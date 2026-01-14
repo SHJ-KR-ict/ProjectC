@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./SurveyClientResult.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 /*
 
 {
@@ -33,13 +33,14 @@ interface Survey {
   num: number;
   sub: string;
   code: number;
-  sdate:string;
+  sdate: string;
   contents: SurveyContent[];
 }
 
 const SurveyClientResult: React.FC = () => {
   const { num } = useParams<{ num: string }>();
   const [survey, setSurvey] = useState<Survey | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLatestSurvey = async () => {
@@ -68,8 +69,8 @@ const SurveyClientResult: React.FC = () => {
       <h2>{survey.sub} - 투표 결과</h2>
       <div className="results">
         {survey.contents.map((content, index) => {
-          const percentage = totalVotes > 0 
-            ? Math.round((content.surveycnt / totalVotes) * 100) 
+          const percentage = totalVotes > 0
+            ? Math.round((content.surveycnt / totalVotes) * 100)
             : 0;
 
           return (
@@ -78,8 +79,8 @@ const SurveyClientResult: React.FC = () => {
                 {content.surveytitle} ({content.surveycnt}표)
               </div>
               <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
+                <div
+                  className="progress-fill"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -90,6 +91,10 @@ const SurveyClientResult: React.FC = () => {
       </div>
       <div className="total-votes">
         총 투표 수: {totalVotes}
+      </div>
+      <div style={{ display:'flex' ,gap:'20px',justifyContent:'center'}}>
+        <button className="btn btn-primary" onClick={() => { navigate(`/surveyclient/${survey.num}`) }} style={{ marginTop: '20px', width: '40%'}}>설문으로 돌아가기</button>
+        <button className="btn btn-primary" onClick={() => { navigate(`/surveylist`) }} style={{ marginTop: '20px', width: '40%' }}>목록으로 돌아가기</button>
       </div>
     </div>
   );

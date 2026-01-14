@@ -47,33 +47,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div>
             <header>
                 <div className="header py-2"  >
-                    <div className="container-fluid" style={{ padding: '0 30px', marginTop: '5px' }}>
-                        <div className="d-flex flex-wrap align-items-center justify-content-lg-start" style={{ justifyContent: 'center' }}>
-                            <a href="/" className="d-flex align-items-center mb-2 mb-lg-0"><img src="/image/header.png" alt="" style={{ width: '180px', marginTop: '5px', margin: '0 600px' }} /></a>
-                            <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0" style={{ gap: '5px' }}>
-                                <li>
-                                    <a href="/" className="nav-link text-white" style={{ font: 'icon', textDecoration: 'underline', textUnderlineOffset: '5px', fontWeight: 'bolder', paddingTop: '22px' }}>
-                                        홈
-                                    </a>
-                                </li>
-                                <li><DropdownNav /></li>
-                                <li>
-                                    <a href="/fortune" className="nav-link text-white" style={{ font: 'icon', textDecoration: 'underline', textUnderlineOffset: '5px', fontWeight: 'bold', paddingTop: '22px' }}>
-                                        오늘의 운세
-                                    </a>
-                                </li>
-                                <li><DropdownChart /></li>
-                                <li><DropdownNavService /></li>
-                            </ul>
-                            <div className="text-end">
-                                {
-                                    !member && <button type="button" className="login-btn" onClick={loginNav}>Login</button>
-                                }
-                                {
-                                    member && <><a href="/alarm"><img src="/home/alarm.jpg" alt="1" style={{ width: '45px', paddingLeft: '8px' }} /></a>
-                                        <a href="/mypage"><img src={`${imageBasePath}${profileimage}`} alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
-                                        <button type="button" className="login-btn" onClick={handleLogout}>Logout</button></>
-                                }
+                    <div className="container-fluid" style={{ padding: '0 500px', marginTop: '5px' }}>
+                        <div className="d-flex flex-wrap align-items-center justify-content-between">
+                            <a href="/" className="d-flex align-items-center mb-2 mb-lg-0"><img src="/image/header.png" alt="" style={{ width: '180px', marginTop: '5px' }} /></a>
+                            <div style={{display:'flex'}}>
+                                <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0" style={{ gap: '5px' }}>
+                                    <li>
+                                        <a href="/" className="nav-link text-white" style={{ font: 'icon', textDecoration: 'underline', textUnderlineOffset: '5px', fontWeight: 'bolder', paddingTop: '22px' }}>
+                                            홈
+                                        </a>
+                                    </li>
+                                    <li><DropdownNav /></li>
+                                    <li>
+                                        <a href="/surveylist" className="nav-link text-white" style={{ font: 'icon', textDecoration: 'underline', textUnderlineOffset: '5px', fontWeight: 'bold', paddingTop: '22px' }}>
+                                            설문조사
+                                        </a>
+                                    </li>
+                                    <li><DropdownChart /></li>
+                                    <li><DropdownNavService /></li>
+                                </ul>
+                                <div className="text-end" style={{marginTop:'8px', marginLeft:'4px'}}>
+                                    {
+                                        !member && <button type="button" className="login-btn" onClick={loginNav}>Login</button>
+                                    }
+                                    {
+                                        member && <><a href="/alarm"><img src="/home/alarm.jpg" alt="1" style={{ width: '45px', paddingLeft: '8px' }} /></a>
+                                            <a href="/mypage"><img src={`${imageBasePath}${profileimage}`} alt="1" style={{ marginLeft: '13px', border: '3px solid #ddd', borderRadius: '50%', width: '45px' }} /></a>
+                                            &nbsp;&nbsp;
+                                            <button type="button" className="login-btn" onClick={handleLogout}>Logout</button></>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -53,29 +53,33 @@ const SurveyAddForm: React.FC = () => {
 
 
   return (
-    <div id="container2">
+    <div className="survey-add-container">
       <form onSubmit={surveySubmit}>
-        <table>
+        <table className="survey-add-table">
           <thead>
-            <tr><th colSpan={2}>설문조사 작성 폼</th></tr>
+            <tr className="survey-add-tr">
+              <th colSpan={2} className="survey-add-thead-th">설문조사 작성 폼</th>
+            </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>제목</th>
-              <td>
+            <tr className="survey-add-tr">
+              <th className="survey-add-label-th">제목</th>
+              <td className="survey-add-td">
                 <input 
                   type="text" 
+                  className="survey-add-input"
                   value={sub}
                   onChange={(e) => setSub(e.target.value)}
                   required
                 />
               </td>
             </tr>
-            <tr>
-              <th>문항수 (2-5)</th>
-              <td>
+            <tr className="survey-add-tr">
+              <th className="survey-add-label-th">문항수 (2-5)</th>
+              <td className="survey-add-td">
                 <input 
                   type="number"
+                  className="survey-add-input"
                   min="2"
                   max="5" 
                   value={code}
@@ -85,11 +89,12 @@ const SurveyAddForm: React.FC = () => {
               </td>
             </tr>
             {surveyTitles.map((title, index) => (
-              <tr key={index}>
-                <th>설문문항{index + 1}</th>
-                <td>
+              <tr key={index} className="survey-add-tr">
+                <th className="survey-add-label-th">설문문항{index + 1}</th>
+                <td className="survey-add-td">
                   <input
                     type="text"
+                    className="survey-add-input"
                     value={title}
                     onChange={(e) => surveyTitleChange(index, e.target.value)}
                     required
@@ -99,10 +104,14 @@ const SurveyAddForm: React.FC = () => {
             ))}
           </tbody>
           <tfoot>
-            <tr>
-              <th colSpan={2}>
-                <button type="submit">등록</button>
-                <button type="button" onClick={() => navigate("/surveylist")}>
+            <tr className="survey-add-tr">
+              <th colSpan={2} className="survey-add-tfoot-th">
+                <button type="submit" className="survey-add-submit-btn">등록</button>
+                <button 
+                  type="button" 
+                  className="survey-add-cancel-btn"
+                  onClick={() => navigate("/surveylist")}
+                >
                   목록
                 </button>
               </th>

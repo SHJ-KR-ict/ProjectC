@@ -1,45 +1,72 @@
+/* 결과 컨테이너 */
 .result-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .results {
-    margin-top: 20px;
-  }
-  
-  .result-item {
-    margin-bottom: 20px;
-  }
-  
-  .result-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .progress-bar {
-    width: 100%;
-    height: 24px;
-    background-color: #f0f0f0;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  
-  .progress-fill {
-    height: 100%;
-    background-color: #4CAF50;
-    transition: width 0.5s ease-in-out;
-  }
-  
-  .percentage {
-    margin-top: 5px;
-    text-align: right;
-    font-weight: bold;
-  }
-  
-  .total-votes {
-    margin-top: 20px;
-    text-align: right;
-    font-weight: bold;
-    color: #666;
-  }
+  max-width: 600px; /* 상세 페이지와 동일하게 조절 */
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+}
+
+.result-container h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #222;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.results {
+  margin-top: 10px;
+}
+
+/* 개별 문항 결과 */
+.result-item {
+  margin-bottom: 25px;
+}
+
+.result-label {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 프로그레스 바 배경 */
+.progress-bar {
+  width: 100%;
+  height: 20px; /* 살짝 얇게 조정 */
+  background-color: #f3f0ff; /* 아주 연한 보라색 배경 */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* 프로그레스 바 채우기 (보라색 그라데이션) */
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b796ec, #cf9feb);
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.1, 0.5, 0.5, 1); 
+}
+
+.percentage {
+  margin-top: 8px;
+  text-align: right;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #b796ec; /* 테마색 강조 */
+}
+
+/* 총 투표 수 */
+.total-votes {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px dashed #eee;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #888;
+}

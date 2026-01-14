@@ -21,12 +21,11 @@
     gap: 8px;
 }
 
-input, select {
+.inputField { 
     padding: 8px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    flex: 1;
 }
 
 .checkButton {
