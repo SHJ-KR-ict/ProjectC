@@ -105,7 +105,7 @@ const Mypagehome: React.FC = () => {
 
               >
                 <div className={style.num}>10</div>
-                <div className={style.label}>팔로워</div>
+                <div className={style.label}>내 Like</div>
               </button>
               <button
                 className={style.statBtn}

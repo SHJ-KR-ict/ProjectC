@@ -1,179 +1,325 @@
 import React, { useState } from 'react'
 import style from './signup.module.css'
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 /* 회원가입 */
 
+interface MemberForm {
+    username: string;
+    nickname: string;
+    id: string;
+    pwd: string;
+    email: string;
+    regDate?: string;
+}
+
 const Signup: React.FC = () => {
 
-    const [form, setForm] = useState({
-        name: '',
+    const [form, setForm] = useState<MemberForm> ({
+        username: '',
         nickname: '',
         id: '',
-        password: '',
-        pwdcheck: '',
+        pwd: '',
         email: '',  
     });
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [idChecked, setIdChecked] = useState(false);
-    const [nicknameChecked, setNicknameChecked] = useState(false);
-    const [emailChecked, setEmailChecked] = useState(false);
+    const [code, setCode] = useState('');
 
-    const validate = () => {
-        const newErrors : {[key:string] : string} = {};
+    const [nicknameMessage, setNicknameMessage] = useState('');
+    const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
 
-        if(!form.name) newErrors.name = '이름을 입력하세요';
+    const [idMessage, setIdMessage] = useState('');
+    const [isIdAvailable, setIsIdAvailable] = useState(false);
 
-        if (!form.nickname) newErrors.nickname = '닉네임을 입력하세요';
-        if (!nicknameChecked) newErrors.nicknameCheck = '닉네임 중복 확인은 필수입니다.';
+    const [pwdConfirm, setPwdConfirm] = useState('');
+    const [pwdMessage, setPwdMessage] = useState('');
+    const [isPwdMatched, setIsPwdMatched] = useState(false);
 
-        if (!form.id) newErrors.id = '아이디를 입력하세요.';
-        if (!idChecked) newErrors.idCheck = '아이디 중복 확인은 필수입니다.';
+    const [emailMessage, setEmailMessage] = useState('');
+    const [isEmailAvailable, setIsEmailAvailable] = useState(false);
 
-        if (!form.email) newErrors.email = '이메일을 입력하세요';
-        if (!emailChecked) newErrors.emailCheck = '이메일 중복 확인은 필수입니다.'
+    const [codeMessage, setCodeMessage] = useState('');
+    const [isCodeAvailable, setIsCodeAvailable] = useState(false);
 
-        if (!form.password || form.password.length < 6)
-            newErrors.password = '비밀번호는 최소 6자 이상이어야 합니다.';
-        if (!form.pwdcheck || form.pwdcheck.length < 6)
-            newErrors.pwdcheck = '올바른 비밀번호를 입력하세요.';
-        
-        return newErrors;
-    }
+    const navigate = useNavigate();
+    const urls = `${process.env.REACT_APP_BACK_END_URL}`;
 
-    const dummyNickname = ['테스형', '테스', '엑스맨'];
-    const dummyId = ['admin', 'tess', 'ictuser']
-    const dummyEmail = ['admin@naver.com', 'tess@naver.com', 'ictuser@naver.com']
-    
-    const memberChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
 
-        const { name, value, type } = e.target;
+        if (name === 'nickname') { setNicknameMessage(''); setIsNicknameAvailable(false); }
+        if (name === 'id') { setIdMessage(''); setIsIdAvailable(false); }
+        if (name === 'pwd') { setPwdMessage(''); }
+        if (name === 'email') { setEmailMessage(''); setIsEmailAvailable(false); }
+        if (name === 'code') { setCodeMessage(''); setIsCodeAvailable(false); }
+    };
 
-        if (type === 'checkbox') {
-
-            let checked = (e.target as HTMLInputElement).checked;
-            console.log("Checkbox :" +checked+ ":" +value);
-            console.log({ [name]: checked ? value : [name].filter(h => h !== value)});
-
-        } else {
-            console.log("Checkbox가 아닙니다.");
-            console.log(`name => ${name} , value => ${value}`);
-
-            setForm(prev => ({...prev, [name]: value}));
-        }
-    }
-
-    const checkNickname = () => {
-        console.log(`nickname값 => ${form.nickname.trim()}`);
+    const nicknameCheck = async () => {
         if (!form.nickname.trim()) {
-            alert("닉네임을 입력하세요!");
+            setNicknameMessage('닉네임을 입력해 주세요.');
+            setIsNicknameAvailable(false);
             return;
         }
 
-        console.log(`nicknameCheck => ${dummyNickname.includes(
-            form.nickname.trim().toLowerCase())}`);
-            if (dummyNickname.includes(form.nickname.trim().toLowerCase())) {
-                alert("이미 존재하는 닉네임 입니다.");
-                setNicknameChecked(false);
+       try {
+            const res = await axios.get(`${urls}/member/nicknameCheck?nickname=${form.nickname}`);
+            if (res.data === 0) {
+              setNicknameMessage('사용 가능한 닉네임입니다.');
+              setIsNicknameAvailable(true);
+              
             } else {
-                alert("사용 가능한 닉네임입니다.");
-                setNicknameChecked(true);
+              setNicknameMessage('이미 사용 중인 닉네임입니다.');
+              setIsNicknameAvailable(false);
             }
-    }
+        } catch (err) {
+            alert('닉네임 중복 확인 실패');
+            console.error(err);
+        }
+    };
 
-    const checkId = () => {
-        console.log(`id값 => ${form.id.trim()}`);
+    const idCheck = async () => {
         if (!form.id.trim()) {
-            alert("아이디를 입력하세요!");
+            setIdMessage('아이디를 입력해 주세요.');
+            setIsIdAvailable(false);
             return;
         }
 
-        console.log(`IdCheck => ${dummyId.includes(
-            form.id.trim().toLowerCase())}`);
-            if (dummyId.includes(form.id.trim().toLowerCase())) {
-                alert("이미 존재하는 아이디 입니다.");
-                setIdChecked(false);
+       try {
+            const res = await axios.get(`${urls}/member/idCheck?id=${form.id}`);
+            if (res.data === 0) {
+              setIdMessage('사용 가능한 아이디입니다.');
+              setIsIdAvailable(true);
+              
             } else {
-                alert("사용 가능한 아이디입니다.");
-                setIdChecked(true);
+              setIdMessage('이미 사용 중인 아이디입니다.')
+              setIsIdAvailable(false);
             }
-    }
+        } catch (err) {
+            alert('아이디 중복 확인 실패');
+            console.error(err);
+        }
+    };
 
-    const checkEmail = () => {
-        console.log(`email값 => ${form.email.trim()}`);
+    const handlePwdConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPwdConfirm(value);
+
+        if (!value) {
+            setPwdMessage('');
+            setIsPwdMatched(false);
+            return;
+        }
+
+        if (value !== form.pwd) {
+            setPwdMessage('비밀번호가 맞지 않습니다.');
+            setIsPwdMatched(false);
+        } else {
+            setPwdMessage('비밀번호가 일치합니다.');
+            setIsPwdMatched(true);
+        }
+    };
+
+    const emailCheck = async () => {
+
         if (!form.email.trim()) {
-            alert("이메일를 입력하세요!");
+            setEmailMessage('이메일을 입력해 주세요.');
+            setIsEmailAvailable(false);
             return;
         }
 
-        console.log(`EmailCheck => ${dummyEmail.includes(
-            form.email.trim().toLowerCase())}`);
-            if (dummyEmail.includes(form.email.trim().toLowerCase())) {
-                alert("이미 존재하는 이메일 입니다.");
-                setEmailChecked(false);
+        try {
+            const res = await axios.post(`${urls}/api/auth/emailCheck`, {
+                email: form.email, });
+            if (res.data === 0) {alert('인증 번호가 발송되었습니다.');
+                setEmailMessage('사용 가능한 이메일입니다.');
+                setIsEmailAvailable(true);
             } else {
-                alert("사용 가능한 이메일입니다.");
-                setEmailChecked(true);
+                setEmailMessage('이미 사용 중인 이메일입니다.');
+                setIsEmailAvailable(false);
             }
-    }
+            
+        } catch (err) {
+            alert('이메일 인증 중 오류 발생');
+            console.error(err);
+        }
+        
+    };
+
+    const checkEmailCode = async () => {
+        try {
+            const res = await axios.post(`${urls}/api/auth/emailCheck/certification`, {
+                email: form.email, code: code });
+            
+            const result = res.data;
+
+            if (result.success) {
+                setCodeMessage('이메일 인증이 완료되었습니다.');
+                setIsCodeAvailable(true);
+
+            } else {
+                if (result.reason === 'exceeded') {
+                    setCodeMessage('3회 이상 인증번호를 틀려 더 이상 시도할 수 없습니다. \n 다시 인증번호를 요청하세요.');
+                    setIsCodeAvailable(false);
+
+                } else if (result.reason === 'expired') {
+                    setCodeMessage('인증번호 유효 시간이 만료되었습니다. \n 다시 인증번호를 요청하세요.');
+                    setIsCodeAvailable(false);
+
+                } else if (result.reason === 'wrong') {
+                    setCodeMessage('인증번호가 일치하지 않습니다.');
+                    setIsCodeAvailable(false);
+                }   
+            }
+
+        } catch (err) {
+            alert('인증번호 확인 오류');
+            console.error(err);
+        }
+    };
+
     
-    const singupSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const myErrors = validate();
-        if (Object.keys(myErrors).length > 0) {
-            console.log(Object.keys(myErrors));
-            setErrors(myErrors);
+        try {
+            const formdata = new FormData()
+                formdata.append('username', form.username);
+                formdata.append('nickname', form.nickname);
+                formdata.append('id', form.id);
+                formdata.append('pwd', form.pwd);
+                formdata.append('email', form.email);
+            
+            await axios.post(`${urls}/member/signup`, formdata);
+            alert('회원가입이 완료되었습니다.');
+            navigate('/');
 
-        } else {
-            console.log("");
+        } catch (error) {
+            console.error('회원가입 오류', error);
+            alert('회원가입 실패');    
         }
     }
+    
 
     return (
         <div className={style.signupContainer}>
-            <h2>Signup</h2>
-            <form className={style.form} onSubmit={singupSubmit}>
+        <form onSubmit={handleSubmit} className={style.form}>
+        <h2>회 원 가 입</h2>
+        <div className={style.formBody}>
 
-                <label>이름</label>
-                    <input type="name" name="name" id="name" onChange={memberChange}/>
-                    {errors.name && <p className={style.error}>{errors.name}</p>}
+            {/* 이름 */}
+            <div className={style.fieldset}>
+                <label htmlFor="username">이름</label>
+                    <input
+                    type="text"
+                    name="username"
+                    value={form.username}
+                    onChange={handleChange}
+                    required
+                    />
+            </div>
 
-                <label>닉네임</label>
-                    <div className={style.inputRow}>
-                        <input type="text" name="nickname" id="nickname" onChange={memberChange}/>
-                        <button type="button" className={style.checkButton} onClick={checkNickname}>중복 확인</button>
-                    </div>
-                    {errors.nickname && <p className={style.error}>{errors.nickname}</p>}
-                    {errors.nicknameCheck && <p className={style.error}>{errors.nicknameCheck}</p>}
 
-                <label>아이디</label>
-                    <div className={style.inputRow}>
-                        <input type="text" name="username" id="username" onChange={memberChange}/>
-                        <button type="button" className={style.checkButton} onClick={checkId}>중복 확인</button>
-                    </div>
-                    {errors.id && <p className={style.error}>{errors.id}</p>}
-                    {errors.idCheck && <p className={style.error}>{errors.idCheck}</p>}
+            {/* 닉네임 */}
+            <div className={style.fieldset}>
+                <label htmlFor="nickname">닉네임</label>
+                <div className={style.inputRow}>
+                    <input
+                    type="text"
+                    name="nickname"
+                    value={form.nickname}
+                    onChange={handleChange}
+                    required
+                    />
+                </div>
+            </div>
+            <button type="button" className={style.checkButton} onClick={nicknameCheck}>중복확인</button>
+            {nicknameMessage && ( <p className={isNicknameAvailable ? style.success : style.error}> {nicknameMessage}</p> )}
+            
 
-                <label>비밀번호</label>
-                    <input type="password" name="password" id="password" onChange={memberChange}/>
-                    {errors.password && <p className={style.error}>{errors.password}</p>}
+            {/* 아이디 */}
+            <div className={style.fieldset}>
+                <label htmlFor="id">아이디</label>
+                <div className={style.inputRow}>
+                    <input
+                        type="text"
+                        name="id"
+                        value={form.id}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+            </div>
+            <button type="button" className={style.checkButton} onClick={idCheck}>중복확인</button>
+            {idMessage && ( <p className={isIdAvailable ? style.success : style.error}> {idMessage}</p> )}
+            
 
-                <label>비밀번호 확인</label>
-                    <input type="pwdcheck" name="pwdcheck" id="pwdcheck" onChange={memberChange}/>
-                    {errors.pwdcheck && <p className={style.error}>{errors.pwdcheck}</p>}    
+            {/* 비밀번호 */}
+            <div className={style.fieldset}>
+                <label htmlFor="pwd">비밀번호</label>
+                <input
+                    type="password"
+                    name="pwd"
+                    value={form.pwd}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
 
-                <label>이메일</label>
-                    <div className={style.inputRow}>
-                        <input type="text" name="email" id="email" onChange={memberChange}/>
-                        <button type="button" className={style.checkButton} onClick={checkEmail}>중복 확인</button>
-                    </div>
-                    {errors.email && <p className={style.error}>{errors.email}</p>}
-                    {errors.emailCheck && <p className={style.error}>{errors.emailCheck}</p>}
+            {/* 비밀번호 확인 */}
+            <div className={style.fieldset}>
+                <label htmlFor="pwdConfirm">비밀번호 확인</label>
+                <input
+                    type="password"
+                    name="pwdConfirm"
+                    value={pwdConfirm}
+                    onChange={handlePwdConfirmChange}
+                    required
+                />
+            </div>
+            {pwdMessage && ( <p className={isPwdMatched ? style.success : style.error}> {pwdMessage}</p> )}
 
-                <button type='submit' className={style.submitButton}>가입하기</button>
-            </form>
+            {/* 이메일 */}
+            <div className={style.fieldset}>
+                <label htmlFor="email">이메일</label>
+                <div className={style.inputRow}>
+                    <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+            </div>
+            <button type="button" className={style.checkButton} onClick={emailCheck}>인증</button>
+            {emailMessage && ( <p className={isEmailAvailable ? style.success : style.error}> {emailMessage}</p>) }
+        
+
+            {/* 인증번호 */}
+            <div className={style.fieldset}>
+                <label htmlFor="code">인증번호</label>
+                <div className={style.inputRow}>
+                    <input
+                    type="text"
+                    value={code}
+                    onChange={e => setCode(e.target.value)}
+                    />
+                </div>
+            </div>
+            <button type="button" className={style.checkButton} onClick={checkEmailCode}>확인</button>
+            {codeMessage && ( <p className={isCodeAvailable ? style.success : style.error}> {codeMessage}</p>) }
+
+            {/* 버튼 */}
+            <div className={style.buttonRow}>
+            <button type="button" className={style.backButton} onClick={() => navigate(-1)}>뒤 로 가 기</button>
+
+            <button type="submit" className={style.joinButton}>가 입 하 기</button>
+            </div>
         </div>
+    </form>
+    </div> 
     )
 }
 

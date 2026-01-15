@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import style from './login.module.css'
-import styles from '../signup/signup.module.css'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../comp/AuthProvider';
 
 const Login: React.FC = () => {
     const [formData, setFormData] = useState({ id: '', pwd: '' });
-    const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState<{ id?: string; pwd?: string }>({});
     const navigate = useNavigate();
     const { login } = useAuth();
     const location = useLocation();
@@ -27,60 +26,86 @@ const Login: React.FC = () => {
     }
 
     const inputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        // 다시 입력하면 해당 필드 에러만 초기화
+        setErrors(prev => ({
+            ...prev,
+            [name]: undefined,
+        }));
     };
 
-    const submitLogin = async () => { // 불러온 login함수로 아이디와 비밀번호를 전달해서 서버로부터
-        // 데이터를 받아온 후 성공이면 success , 실패면 fail 등이 반환 된다.
+    const submitLogin = async () => {
+        const newErrors: { id?: string; pwd?: string } = {};
+        if (!formData.id.trim()) {
+            newErrors.id = '아이디를 입력해주세요.';
+        }
+
+        if (!formData.pwd.trim()) {
+            newErrors.pwd = '비밀번호를 입력해주세요.';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         const result = await login(formData.id, formData.pwd);
         if (result === 'success') {
-            setMessage('로그인 성공!');
-            //{replace:true} 웹페이지 에서 로그인 이후 이동 하는 경로 , 뒤로 가기를 막아주는 역할 
+            setErrors({});
+
             navigate(from, { replace: true });
         } else if (result === 'fail') {
-            setMessage('아이디 또는 비밀번호가 틀렸습니다.');
+            setErrors({
+                pwd: '아이디나 비밀번호가 틀렸습니다.',
+            });
+
         } else {
-            setMessage('서버 오류');
+            alert('서버 오류');
         }
     };
 
     return (
-        <div className={styles.signupContainer}>
+        <div className={style.signupContainer}>
             <h2>Login</h2>
-            <form className={styles.form} onSubmit={(e) => {
+            <form className={style.form} onSubmit={(e) => {
                 e.preventDefault();
             }}
             >
                 <label>아이디</label>
-                <input type="text" name="id" value={formData.id} onChange={inputChange} placeholder="id" required className={styles.inputField} />
+                <div className={style.inputGroup}>
+                    <input
+                        type="text"
+                        name="id"
+                        value={formData.id}
+                        onChange={inputChange}
+                        placeholder="id"
+                    />
+                    {errors.id && <p className={style.error}>{errors.id}</p>}
+                </div>
 
                 <label>비밀번호</label>
-                <input type="password" name="pwd" value={formData.pwd} onChange={inputChange} placeholder="password" required className={styles.inputField} />
+                <div className={style.inputGroup}>
+                    <input
+                        type="password"
+                        name="pwd"
+                        value={formData.pwd}
+                        onChange={inputChange}
+                        placeholder="password"
+                    />
+                    {errors.pwd && <p className={style.error}>{errors.pwd}</p>}
+                </div>
 
-                <button type="submit" onClick={submitLogin} className={styles.submitButton}>로그인</button>
-                <button type="submit" className={styles.submitButton}>패스워드리스 로그인</button>
+                <button type="submit" onClick={submitLogin} className={style.loginButton}>로그인</button>
+                <button type="submit" className={style.pwdlessButton}>패스워드리스 로그인</button>
+                <div style={{ textAlign: 'center' }}>아직 계정이 없으신가요?</div>
+                <button type="submit" className={style.signupButton} onClick={() => window.location.href = '/signup'}>회원가입 하기</button>
             </form>
-
-            <div style={{ textAlign: 'center', marginTop: '15px' }}>
-                <a href="/signup" style={{ textDecoration: 'none' }}>회원가입 하기</a>
-            </div>
-
-
-            {/* sns api */}
-            {/* <div className={style.buttonContainer}>
-
-                <button className={style.imageButton}>
-                    <img src="/social/instagram.png" alt="Instagram" />
-                </button>
-
-                <button className={style.imageButton}>
-                    <img src="/social/x.jpg" alt="X" />
-                </button>
-
-                <button className={style.imageButton}>
-                    <img src="/social/kakaotalk.png" alt="KakaoTalk" />
-                </button>
-            </div> */}
         </div>
     );
 };
